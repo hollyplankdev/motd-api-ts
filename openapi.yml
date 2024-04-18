@@ -15,12 +15,12 @@ paths:
   /:
     get:
       summary: Get latest MOTD
-      description: Responds with the latest message of the day.
+      description: Retrieves the latest message of the day.
       responses:
         "200":
           description: The latest MOTD.
           content:
-            text/json:
+            application/json:
               schema:
                 $ref: "#/components/schemas/MOTD"
         "404":
@@ -32,13 +32,13 @@ paths:
         "200":
           description: Information about the newly created MOTD.
           content:
-            text/json:
+            application/json:
               schema:
                 $ref: "#/components/schemas/MOTD"
   /{id}:
     get:
       summary: Get specific MOTD
-      description: Responds with a specific message of the day by its ID.
+      description: Retrieves a specific message of the day.
       parameters:
         - in: path
           name: id
@@ -52,13 +52,42 @@ paths:
         "200":
           description: The MOTD with the matching ID.
           content:
-            text/json:
+            application/json:
               schema:
                 $ref: "#/components/schemas/MOTD"
         "400":
           description: No ID provided.
         "404":
           description: No MOTD by that ID found.
+    patch:
+      summary: Update specific MOTD
+      description: Updates the message field of a specific message of the day.
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the MOTD to update.
+          required: true
+          schema:
+            type: string
+            format: mongo-objectid
+            example: fMW0PcHRJGUtUnadq4mvy
+      requestBody:
+        description: Fields of the MOTD to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  $ref: "#/components/schemas/MOTD/properties/message"
+      responses:
+        "200":
+          description: The updated MOTD.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MOTD"
 
 components:
   schemas:

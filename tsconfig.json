@@ -4,7 +4,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@hello-world-ts/*": ["packages/*/src"]
+      "@motd-ts/*": ["packages/*/src"]
     },
     "noEmit": true
   }

@@ -1,6 +1,6 @@
-# Hello World API: TypeScript
+# Message of the Day API: TypeScript
 
-An example Hello World API written with TypeScript.
+An example MOTD API written with TypeScript.
 
 # Features
 

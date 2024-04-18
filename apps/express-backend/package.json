@@ -1,5 +1,5 @@
 {
-  "name": "@hello-world-ts/express-backend",
+  "name": "@motd-ts/express-backend",
   "license": "BOBBO-NET Friendly MIT License",
   "private": "true",
   "scripts": {

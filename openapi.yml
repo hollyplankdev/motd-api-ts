@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  description: |-
+    A basic starter API. All it does is say Hello World!
+  version: "1.0.0"
+  contact:
+    email: hollygrahamplank@gmail.com
+    url: hollyplank.com
+    name: Holly Plank
+  license:
+    name: BOBBO-NET Friendly MIT License
+    url: https://github.com/HollyGrahamPlank/hello-world-api-ts/blob/main/LICENSE.md
+  title: "Hello World API"
+paths:
+  /:
+    get:
+      summary: Greets the world!
+      description: Greets the world by saying "Hello World!".
+      responses:
+        "200":
+          description: The greeting message.
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: "Hello World!"
+
+servers:
+  - url: http://localhost:30330
+    description: The local express deployment

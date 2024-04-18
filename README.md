@@ -4,8 +4,12 @@ An example MOTD API written with TypeScript.
 
 # Features
 
-- A basic API scoped out in [openapi.yml](openapi.yml)
-  - `GET /`: Responds with "Hello World!"
+- An API scoped out in [openapi.yml](openapi.yml)
+  - `GET /`: Retrieves the latest MOTD
+  - `POST /`: Creates a new MOTD
+  - `GET /{id}`: Retrieves a specific MOTD
+  - `PATCH /{id}`: Updates a specific MOTD
+  - `GET /history`: List previous MOTDs sorted by newest to oldest
 - A monolithic [ExpressJS](https://expressjs.com/) implementation in [apps/express-backend](apps/express-backend/)
 
 # Using

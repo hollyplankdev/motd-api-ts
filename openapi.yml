@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: |-
-    A basic starter API. All it does is say Hello World!
+    A basic API providing "message of the day" functionality.
   version: "1.0.0"
   contact:
     email: hollygrahamplank@gmail.com
@@ -9,21 +9,156 @@ info:
     name: Holly Plank
   license:
     name: BOBBO-NET Friendly MIT License
-    url: https://github.com/HollyGrahamPlank/hello-world-api-ts/blob/main/LICENSE.md
-  title: "Hello World API"
+    url: https://github.com/HollyGrahamPlank/motd-api-ts/blob/main/LICENSE.md
+  title: "MOTD API"
 paths:
   /:
     get:
-      summary: Greets the world!
-      description: Greets the world by saying "Hello World!".
+      summary: Get latest MOTD
+      description: Retrieves the latest message of the day.
       responses:
         "200":
-          description: The greeting message.
+          description: The latest MOTD.
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-              example: "Hello World!"
+                $ref: "#/components/schemas/MOTD"
+        "404":
+          description: There are no MOTDs.
+    post:
+      summary: Create new MOTD
+      description: Creates a new MOTD and returns information about it.
+      responses:
+        "200":
+          description: Information about the newly created MOTD.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MOTD"
+  /{id}:
+    get:
+      summary: Get specific MOTD
+      description: Retrieves a specific message of the day.
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the MOTD to get.
+          required: true
+          schema:
+            type: string
+            format: mongo-objectid
+            example: fMW0PcHRJGUtUnadq4mvy
+      responses:
+        "200":
+          description: The MOTD with the matching ID.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MOTD"
+        "400":
+          description: No ID provided.
+        "404":
+          description: No MOTD by that ID found.
+    patch:
+      summary: Update specific MOTD
+      description: Updates the message field of a specific message of the day.
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the MOTD to update.
+          required: true
+          schema:
+            type: string
+            format: mongo-objectid
+            example: fMW0PcHRJGUtUnadq4mvy
+      requestBody:
+        description: Fields of the MOTD to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  $ref: "#/components/schemas/MOTD/properties/message"
+      responses:
+        "200":
+          description: The updated MOTD.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MOTD"
+        "400":
+          description: Missing or invalid fields.
+        "404":
+          description: No MOTD by that ID found.
+  /history:
+    get:
+      summary: Get previous MOTDs
+      description: Get a list of previous message of the days, sorted by newest to oldest. Results are paginated.
+      parameters:
+        - in: query
+          name: lastPageKey
+          description: If paginating, the value of the `pageKey` from the previous request.
+          required: false
+          schema:
+            type: integer
+            example: 1704829257257
+        - in: query
+          name: pageSize
+          description: If paginating, the max number of entries per-page.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 32
+            default: 8
+      responses:
+        "200":
+          description: A list of MOTDs (after `lastPageKey`, if provided)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageKey:
+                    type: integer
+                    example: 1704829257257
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MOTD"
+        "400":
+          description: Malformed `lastPageKey`.
+
+components:
+  schemas:
+    MOTD:
+      description: An object representing some message of the day.
+      type: object
+      required:
+        - id
+        - message
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          description: The ID representing this MOTD.
+          type: string
+          format: mongo-objectid
+          example: fMW0PcHRJGUtUnadq4mvy
+        message:
+          description: The message text contained in this MOTD.
+          type: string
+          example: "You know what they say: a watched pot never stops!"
+        createdAt:
+          description: The date & time that this MOTD was originally created at.
+          type: string
+          format: date-time
+        updatedAt:
+          description: The date & time that this MOTD was last updated at.
+          type: string
+          format: date-time
 
 servers:
   - url: http://localhost:30330

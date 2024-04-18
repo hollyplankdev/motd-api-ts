@@ -63,6 +63,7 @@ paths:
 components:
   schemas:
     MOTD:
+      description: An object representing some message of the day.
       type: object
       required:
         - id

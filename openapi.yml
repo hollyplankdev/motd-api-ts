@@ -47,6 +47,7 @@ paths:
           schema:
             type: string
             format: mongo-objectid
+            example: fMW0PcHRJGUtUnadq4mvy
       responses:
         "200":
           description: The MOTD with the matching ID.
@@ -54,6 +55,10 @@ paths:
             text/json:
               schema:
                 $ref: "#/components/schemas/MOTD"
+        "400":
+          description: No ID provided.
+        "404":
+          description: No MOTD by that ID found.
 
 components:
   schemas:

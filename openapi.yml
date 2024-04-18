@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: |-
-    A basic starter API. All it does is say Hello World!
+    A basic API providing "message of the day" functionality.
   version: "1.0.0"
   contact:
     email: hollygrahamplank@gmail.com
@@ -9,21 +9,71 @@ info:
     name: Holly Plank
   license:
     name: BOBBO-NET Friendly MIT License
-    url: https://github.com/HollyGrahamPlank/hello-world-api-ts/blob/main/LICENSE.md
-  title: "Hello World API"
+    url: https://github.com/HollyGrahamPlank/motd-api-ts/blob/main/LICENSE.md
+  title: "MOTD API"
 paths:
   /:
     get:
-      summary: Greets the world!
-      description: Greets the world by saying "Hello World!".
+      summary: Get latest MOTD
+      description: Responds with the latest message of the day.
       responses:
         "200":
-          description: The greeting message.
+          description: The latest MOTD.
           content:
-            text/plain:
+            text/json:
               schema:
-                type: string
-              example: "Hello World!"
+                $ref: "#/components/schemas/MOTD"
+        "404":
+          description: There are no MOTDs.
+    post:
+      summary: Create new MOTD
+      description: Creates a new MOTD and returns information about it.
+      responses:
+        "200":
+          description: Information about the newly created MOTD.
+          content:
+            text/json:
+              schema:
+                $ref: "#/components/schemas/MOTD"
+  /{id}:
+    get:
+      summary: Get specific MOTD
+      description: Responds with a specific message of the day by its ID.
+      responses:
+        "200":
+          description: The MOTD with the matching ID.
+          content:
+            text/json:
+              schema:
+                $ref: "#/components/schemas/MOTD"
+
+components:
+  schemas:
+    MOTD:
+      type: object
+      required:
+        - id
+        - message
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          description: The ID representing this MOTD.
+          type: string
+          format: mongo-objectid
+          example: fMW0PcHRJGUtUnadq4mvy
+        message:
+          description: The message text contained in this MOTD.
+          type: string
+          example: "You know what they say: a watched pot never stops!"
+        createdAt:
+          description: The date & time that this MOTD was originally created at.
+          type: string
+          format: date-time
+        updatedAt:
+          description: The date & time that this MOTD was last updated at.
+          type: string
+          format: date-time
 
 servers:
   - url: http://localhost:30330

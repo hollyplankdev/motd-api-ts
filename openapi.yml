@@ -39,6 +39,14 @@ paths:
     get:
       summary: Get specific MOTD
       description: Responds with a specific message of the day by its ID.
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the MOTD to get.
+          required: true
+          schema:
+            type: string
+            format: mongo-objectid
       responses:
         "200":
           description: The MOTD with the matching ID.

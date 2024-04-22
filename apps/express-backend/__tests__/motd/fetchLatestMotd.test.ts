@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
+import { MessageOfTheDay } from "@motd-ts/models";
+import supertest from "supertest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createMotd, fetchLatestMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
-import supertest from "supertest";
-import { MessageOfTheDay } from "@motd-ts/models";
 
 describe("fetchLatestMotd", () => {
   let testApp: TestApp;

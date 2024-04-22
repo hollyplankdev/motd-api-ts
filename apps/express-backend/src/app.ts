@@ -2,7 +2,7 @@ import express from "express";
 import * as http from "http";
 import { AddressInfo } from "net";
 import createOpenApiValidatorMiddleware from "./middleware/openApiValidator.middleware.js";
-import transmissionRouter from "./routes/index.routes.js";
+import transmissionRouter from "./routes/motd.routes.js";
 
 /** Arguments required for the application to run */
 export interface RunAppArguments {

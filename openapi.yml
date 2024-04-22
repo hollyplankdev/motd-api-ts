@@ -28,6 +28,18 @@ paths:
     post:
       summary: Create new MOTD
       description: Creates a new MOTD and returns information about it.
+      requestBody:
+        description: Data for the new MOTD.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  $ref: "#/components/schemas/MOTD/properties/message"
       responses:
         "200":
           description: Information about the newly created MOTD.

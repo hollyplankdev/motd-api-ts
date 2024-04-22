@@ -32,7 +32,7 @@ describe("listMotds", () => {
   });
 });
 
-describe("PATCH `/:motdId`", () => {
+describe("GET `/history`", () => {
   let testApp: TestApp;
   beforeEach(async () => {
     testApp = new TestApp();

@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import { MessageOfTheDayModel } from "../models/messageOfTheDay";
+import { FilterQuery } from "mongoose";
+import { MessageOfTheDay } from "@motd-ts/models";
 
 /**
  * Creates a new MOTD with a given message.
@@ -92,4 +94,49 @@ export const remove: RequestHandler = async (req, res) => {
   // OTHERWISE - we did delete one!
   res.status(200).send();
   console.log(`...Removed MOTD w/ id ${req.params.id}`);
+};
+
+/**
+ * Lists existing MOTDs, sorted by date in descending order. Results are paginated.
+ *
+ * @param req.query.lastPageKey OPTIONAL - The page key to start at, if paginating. This should be
+ *   the value of `pageKey` from a previous call.
+ * @param req.query.pageSize OPTIONAL - The max number of entries per-page.
+ */
+export const list: RequestHandler = async (req, res) => {
+  console.log(`Trying to list MOTDs...`);
+
+  // Create the search query depending on if we have a starting page key
+  const searchQuery: FilterQuery<MessageOfTheDay> = {};
+  if (req.query.lastPageKey) {
+    // Last page key is actually just the createdAt date of the last processed
+    // document, encoded as an integer - so that's why we parse it here.
+    searchQuery.createdAt = { $lt: new Date(parseInt(req.query.lastPageKey as string, 10)) };
+  }
+
+  // Search for MOTDs, making sure to search in order and start/stop in a paginated way.
+  const pageSize: number = parseInt(req.query.pageSize as string, 10);
+  const foundItems = await MessageOfTheDayModel.find(searchQuery)
+    .limit(pageSize)
+    .sort("-createdAt")
+    .select("-__v")
+    .lean();
+
+  // Calculate the lastPageKey of THIS REQUEST. The page key is just the createdAt date of the
+  // last processed document, encoded as an integer.
+  const rawPageKey =
+    foundItems.length > 0 ? foundItems[foundItems.length - 1].createdAt : undefined;
+  const pageKey = rawPageKey ? rawPageKey.valueOf() : undefined;
+
+  // RESPOND!
+  res
+    .status(200)
+    .contentType("json")
+    .send(
+      JSON.stringify({
+        pageKey,
+        items: foundItems,
+      }),
+    );
+  console.log(`...Listed ${foundItems.length} MOTDs`);
 };

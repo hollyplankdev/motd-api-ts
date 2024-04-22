@@ -5,6 +5,7 @@ const indexRouter: Router = Router();
 
 indexRouter.get("/", controller.readLatest);
 indexRouter.post("/", controller.create);
+indexRouter.get("/history", controller.list);
 indexRouter.get("/:id", controller.read);
 indexRouter.patch("/:id", controller.update);
 indexRouter.delete("/:id", controller.remove);

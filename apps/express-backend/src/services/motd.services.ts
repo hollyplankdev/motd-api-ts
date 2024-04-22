@@ -9,7 +9,10 @@ import { MessageOfTheDayModel } from "../models/messageOfTheDay";
  * @returns The newly created MOTD in the database.
  */
 export async function createMotd(message: string): Promise<MessageOfTheDay> {
-  return (await MessageOfTheDayModel.create({ message })).toObject({ versionKey: false });
+  return (await MessageOfTheDayModel.create({ message })).toObject({
+    versionKey: false,
+    flattenObjectIds: true,
+  });
 }
 
 /**

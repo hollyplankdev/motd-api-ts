@@ -7,8 +7,7 @@ export const create: RequestHandler = async (req, res) => {
   console.log(`Created MOTD w/ id ${motd._id}`);
 
   // Turn into an object without the verison key and SEND!
-  const plainMotd = motd.toObject({ versionKey: false });
-  res.status(200).contentType("json").send(plainMotd);
+  res.status(200).send(motd.toObject({ versionKey: false }));
 };
 
 export const readLatest: RequestHandler = async (req, res) => {
@@ -22,8 +21,7 @@ export const readLatest: RequestHandler = async (req, res) => {
   }
 
   // Turn into an object without the version key and SEND!
-  const plainMotd = motd.toObject({ versionKey: false });
-  res.status(200).send(plainMotd);
+  res.status(200).send(motd.toObject({ versionKey: false }));
 };
 
 export const read: RequestHandler = async (req, res) => {
@@ -37,10 +35,22 @@ export const read: RequestHandler = async (req, res) => {
   }
 
   // Turn into an object without the version key and SEND!
-  const plainMotd = motd.toObject({ versionKey: false });
-  res.status(200).send(plainMotd);
+  res.status(200).send(motd.toObject({ versionKey: false }));
 };
 
-export const update: RequestHandler = async (req, res) => {};
+export const update: RequestHandler = async (req, res) => {
+  const motd = await MessageOfTheDayModel.findById(req.params.id);
+
+  // If there's no MOTD... EXIT EARLY!
+  if (!motd) {
+    res.status(404).send();
+    return;
+  }
+
+  // Update the object, save it, and SEND!
+  motd.message = req.body.message;
+  await motd.save();
+  res.status(200).send(motd.toObject({ versionKey: false }));
+};
 
 export const remove: RequestHandler = async (req, res) => {};

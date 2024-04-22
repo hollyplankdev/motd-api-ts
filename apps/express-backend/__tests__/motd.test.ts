@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createMotd } from "../src/services/motd.services";
+import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
+import { createMotd, fetchMotd } from "../src/services/motd.services";
 import TestApp from "./utils/testApp";
 
 describe("Message of the Day", () => {
@@ -13,21 +13,33 @@ describe("Message of the Day", () => {
       await testApp.teardown();
     });
 
-    it("creates new MOTD", async () => {
-      const message = "An example message!";
-      const motd = await createMotd(message);
+    //
+    //  Tests
+    //
 
-      expect(motd).toBeTruthy();
-      expect(motd?.message).toEqual(message);
-      expect(motd?._id).toBeTypeOf("string");
-      expect(motd?.createdAt).toBeTruthy();
-      expect(motd?.updatedAt).toBeTruthy();
+    describe("creates", () => {
+      test("new MOTD", async () => {
+        const message = "An example message!";
+        const motd = await createMotd(message);
+
+        expect(motd).toBeTruthy();
+        expect(motd?.message).toEqual(message);
+        expect(motd?._id).toBeTypeOf("string");
+        expect(motd?.createdAt).toBeTruthy();
+        expect(motd?.updatedAt).toBeTruthy();
+      });
+
+      test("empty string MOTD", async () => {
+        const motd = await createMotd("");
+        expect(motd).toBeFalsy();
+      });
     });
 
-    it("fails to create empty string MOTD", async () => {
-      const motd = await createMotd("");
-
-      expect(motd).toBeFalsy();
+    describe("get specific", () => {
+      test("invalid ID", async () => {
+        const motd = await fetchMotd("GARBAGE");
+        expect(motd).toBeFalsy();
+      });
     });
   });
 });

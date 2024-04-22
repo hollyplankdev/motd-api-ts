@@ -1,6 +1,7 @@
 import { MessageOfTheDay } from "@motd-ts/models";
-import mongoose, { FilterQuery } from "mongoose";
+import mongoose, { FilterQuery, mongo } from "mongoose";
 import { MessageOfTheDayModel } from "../models/messageOfTheDay";
+import castObjectId from "../utils/castObjectId";
 
 /**
  * Create a new MOTD in the database.
@@ -40,8 +41,11 @@ export async function fetchLatestMotd(): Promise<MessageOfTheDay | null> {
 export async function fetchMotd(
   id: string | mongoose.Types.ObjectId,
 ): Promise<MessageOfTheDay | null> {
+  const correctedId = castObjectId(id);
+  if (!correctedId) return null;
+
   // Get the existing MOTD. If there is none, EXIT EARLY.
-  const motd = await MessageOfTheDayModel.findById(id);
+  const motd = await MessageOfTheDayModel.findById(correctedId);
   if (!motd) return null;
 
   // Simplify and return the MOTD
@@ -59,8 +63,11 @@ export async function updateMotd(
   id: string | mongoose.Types.ObjectId,
   newMessage: string,
 ): Promise<MessageOfTheDay | null> {
+  const correctedId = castObjectId(id);
+  if (!correctedId) return null;
+
   // Get the existing MOTD. If there is none, EXIT EARLY.
-  const motd = await MessageOfTheDayModel.findById(id);
+  const motd = await MessageOfTheDayModel.findById(correctedId);
   if (!motd) return null;
 
   // Update the MOTD
@@ -78,8 +85,11 @@ export async function updateMotd(
  * @returns True if a MOTD was found and removed, false otherwise.
  */
 export async function removeMotd(id: string | mongoose.Types.ObjectId): Promise<boolean> {
+  const correctedId = castObjectId(id);
+  if (!correctedId) return false;
+
   // Try to remove the MOTD
-  const result = await MessageOfTheDayModel.deleteOne({ _id: id });
+  const result = await MessageOfTheDayModel.deleteOne({ _id: correctedId });
   return result.deletedCount > 0;
 }
 

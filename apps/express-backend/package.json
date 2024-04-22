@@ -4,6 +4,8 @@
   "private": "true",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:up": "docker compose -f compose-local.yaml up -d --build --remove-orphans",
+    "dev:down": "docker compose -f compose-local.yaml down",
     "start": "tsx src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest watch"

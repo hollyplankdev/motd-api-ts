@@ -1,7 +1,7 @@
 /** An object representing some message of the day, or MOTD. */
 export interface MessageOfTheDay {
   /** The MongoDB ID that identifies this MOTD. */
-  id: string;
+  _id: string;
 
   /** The actual message text contained in this MOTD. */
   message: string;

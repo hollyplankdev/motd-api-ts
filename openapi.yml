@@ -173,7 +173,7 @@ components:
         - createdAt
         - updatedAt
       properties:
-        id:
+        _id:
           description: The ID representing this MOTD.
           type: string
           format: mongo-objectid

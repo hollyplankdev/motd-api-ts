@@ -91,7 +91,7 @@ export const remove: RequestHandler = async (req, res) => {
   const result = await removeMotd(req.params.id);
 
   // If there's no MOTD... EXIT EARLY!
-  if (result) {
+  if (!result) {
     res.status(404).send();
     return;
   }

@@ -124,7 +124,7 @@ paths:
         "200":
           description: The MOTD with the matching ID was removed.
         "400":
-          description: No ID provided.
+          description: Malformatted ID provided.
         "404":
           description: No MOTD by that ID found.
   /history:

@@ -168,7 +168,7 @@ components:
       description: An object representing some message of the day.
       type: object
       required:
-        - id
+        - _id
         - message
         - createdAt
         - updatedAt

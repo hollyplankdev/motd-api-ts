@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
+import { MessageOfTheDay } from "@motd-ts/models";
+import mongoose from "mongoose";
+import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createMotd, updateMotd, fetchMotd } from "../../src/services/motd.services";
+import { createMotd, fetchMotd, updateMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
 
 describe("updateMotd", () => {
@@ -68,5 +71,74 @@ describe("updateMotd", () => {
       expect(motd?.message).not.toEqual(foundMotd?.message);
       expect(motd?.updatedAt).not.toEqual(foundMotd?.updatedAt);
     }
+  });
+});
+
+describe("PATCH `/:motdId`", () => {
+  let testApp: TestApp;
+  beforeAll(async () => {
+    testApp = new TestApp();
+    await testApp.setup();
+  });
+  afterAll(async () => {
+    await testApp.teardown();
+  });
+
+  //
+  //  Tests
+  //
+
+  it("415 when invalid ID used and missing message", async () => {
+    const response = await supertest(testApp.server).patch(`/BADID`);
+    expect(response.statusCode).toEqual(415);
+
+    const foundMotd: MessageOfTheDay = response.body;
+    expect(foundMotd._id).toBeFalsy();
+  });
+
+  it("415 when non-existing ObjectId used and missing message", async () => {
+    const response = await supertest(testApp.server).patch(`/${new mongoose.Types.ObjectId()}`);
+    expect(response.statusCode).toEqual(415);
+
+    const foundMotd: MessageOfTheDay = response.body;
+    expect(foundMotd._id).toBeFalsy();
+  });
+
+  it("400 when invalid ID used", async () => {
+    const response = await supertest(testApp.server)
+      .patch(`/BADID`)
+      .send({ message: faker.hacker.phrase() });
+    expect(response.statusCode).toEqual(400);
+
+    const foundMotd: MessageOfTheDay = response.body;
+    expect(foundMotd._id).toBeFalsy();
+  });
+
+  it("404 when non-existing ObjectId used", async () => {
+    const response = await supertest(testApp.server)
+      .patch(`/${new mongoose.Types.ObjectId()}`)
+      .send({ message: faker.hacker.phrase() });
+    expect(response.statusCode).toEqual(404);
+
+    const foundMotd: MessageOfTheDay = response.body;
+    expect(foundMotd._id).toBeFalsy();
+  });
+
+  it("200 when MOTD exists", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    const newMessage = faker.company.catchPhrase();
+    const response = await supertest(testApp.server)
+      .patch(`/${motd?._id}`)
+      .send({ message: newMessage });
+    expect(response.statusCode).toEqual(200);
+
+    const transformedMotd = response.body as MessageOfTheDay;
+    expect(transformedMotd._id).toEqual(motd?._id);
+    expect(transformedMotd.message).toEqual(newMessage);
+    expect(motd?.message).not.toEqual(transformedMotd.message);
+
+    const foundMotd = await fetchMotd(motd?._id);
+    expect(foundMotd).toBeTruthy();
+    expect(foundMotd?.message).toEqual(newMessage);
   });
 });

@@ -105,9 +105,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/MOTD"
         "400":
-          description: Missing or invalid fields.
+          description: Malformatted ID provided.
         "404":
           description: No MOTD by that ID found.
+        "415":
+          description: Incorrect Content-Type.
     delete:
       summary: Remove specific MOTD
       description: Removes a specific message of the day.

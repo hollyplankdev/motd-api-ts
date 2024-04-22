@@ -28,6 +28,18 @@ paths:
     post:
       summary: Create new MOTD
       description: Creates a new MOTD and returns information about it.
+      requestBody:
+        description: Data for the new MOTD.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  $ref: "#/components/schemas/MOTD/properties/message"
       responses:
         "200":
           description: Information about the newly created MOTD.
@@ -156,12 +168,12 @@ components:
       description: An object representing some message of the day.
       type: object
       required:
-        - id
+        - _id
         - message
         - createdAt
         - updatedAt
       properties:
-        id:
+        _id:
           description: The ID representing this MOTD.
           type: string
           format: mongo-objectid

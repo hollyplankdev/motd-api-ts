@@ -1,13 +1,17 @@
 import express from "express";
 import * as http from "http";
+import { connect as mongooseConnect } from "mongoose";
 import { AddressInfo } from "net";
 import createOpenApiValidatorMiddleware from "./middleware/openApiValidator.middleware.js";
-import transmissionRouter from "./routes/index.routes.js";
+import transmissionRouter from "./routes/motd.routes.js";
 
 /** Arguments required for the application to run */
 export interface RunAppArguments {
   /** The port to use for the HTTP server backing this app. */
   httpPort?: number;
+
+  /** The URL to use when connecting to the database. */
+  mongoDbUrl: string;
 
   /** Where on disk to find the OpenAPI spec. */
   apiSpecPath: string;
@@ -52,6 +56,10 @@ async function runApp(
   //  EXECUTE
   //
 
+  // Connect to the database
+  const dbConnection = await mongooseConnect(args.mongoDbUrl);
+  console.log(`DB connected on port ${dbConnection.connection.port}...`);
+
   // Start listening on the HTTP server. If there's an error, REJECT!
   // (we promisify this so that in the future we can easily wait for
   // the server to start before doing some other action.)
@@ -60,7 +68,7 @@ async function runApp(
     httpServer.on("error", (err) => reject(err));
   });
 
-  console.log(`Server running on port ${usedPort}`);
+  console.log(`...Server running on port ${usedPort}!`);
   return { app, httpServer };
 }
 

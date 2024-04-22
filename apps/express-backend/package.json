@@ -4,6 +4,8 @@
   "private": "true",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:up": "docker compose -f compose-local.yaml up -d --build --remove-orphans",
+    "dev:down": "docker compose -f compose-local.yaml down",
     "start": "tsx src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest watch"
@@ -16,8 +18,10 @@
     "vitest": "^1.5.0"
   },
   "dependencies": {
+    "@motd-ts/models": "workspace:*",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-openapi-validator": "^5.1.6"
+    "express-openapi-validator": "^5.1.6",
+    "mongoose": "^8.3.2"
   }
 }

@@ -120,7 +120,7 @@ export async function listMotds(args: {
 
   // Search for MOTDs, making sure to search in order and start/stop in a paginated way.
   const foundItems = (
-    await MessageOfTheDayModel.find(searchQuery).limit(args.pageSize).sort("-createdAt")
+    await MessageOfTheDayModel.find(searchQuery).limit(args.pageSize).sort("-createdAt _id")
   ).map((fullItem) => fullItem.toObject({ versionKey: false, flattenObjectIds: true }));
 
   // Calculate the lastPageKey of THIS REQUEST. The page key is just the createdAt date of the

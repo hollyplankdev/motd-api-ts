@@ -30,6 +30,31 @@ describe("listMotds", () => {
     expect(items).toBeTruthy();
     expect(items).toHaveLength(0);
   });
+
+  it("doesn't skip MOTDs", async () => {
+    // Create a bunch of dummy MOTDs
+    const allMotds = await Promise.all(
+      faker.helpers
+        .multiple(faker.hacker.phrase, { count: 32 })
+        .map(async (phrase) => createMotd(phrase)),
+    );
+
+    // Paginate through the EVERYTHING, and collect results.
+    const motdsFoundFromListing: MessageOfTheDay[] = [];
+    let lastPageKey: number | undefined;
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      const results = await listMotds({ pageSize: 8, lastPageKey });
+
+      results.items.forEach((item) => motdsFoundFromListing.push(item));
+      lastPageKey = results.pageKey;
+    } while (lastPageKey);
+
+    expect(motdsFoundFromListing).toHaveLength(allMotds.length);
+  });
+
+  it("returns results in descending order");
+  it("doesn't exceed pageSize");
 });
 
 describe("GET `/history`", () => {
@@ -50,6 +75,4 @@ describe("GET `/history`", () => {
   it("200 when MOTDs exist");
   it("200 when MOTDs exist and using lastPageKey");
   it("400 when no malformed lastPageKey used");
-  it("returns results in descending order");
-  it("doesn't skip MOTDs");
 });

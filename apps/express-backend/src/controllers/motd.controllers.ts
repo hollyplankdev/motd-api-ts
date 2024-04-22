@@ -17,6 +17,12 @@ export const create: RequestHandler = async (req, res) => {
   console.log(`Trying create MOTD...`);
   const motd = await createMotd(req.body.message);
 
+  // If the MOTD couldn't be created... EXIT EARLY!
+  if (!motd) {
+    res.status(400).send();
+    return;
+  }
+
   res.status(200).send(motd);
   console.log(`...Created MOTD w/ id ${motd._id}`);
 };

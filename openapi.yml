@@ -47,6 +47,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MOTD"
+        "415":
+          description: Incorrect Content-Type.
+        "400":
+          description: Invalid arguments. Message must not be empty.
   /{id}:
     get:
       summary: Get specific MOTD

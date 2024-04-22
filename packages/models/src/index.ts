@@ -1,1 +1,1 @@
-export * from "./MessageOfTheDay";
+export * from "./messageOfTheDay";

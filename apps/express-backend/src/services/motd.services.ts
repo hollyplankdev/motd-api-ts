@@ -1,5 +1,5 @@
 import { MessageOfTheDay } from "@motd-ts/models";
-import mongoose, { FilterQuery, mongo } from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import { MessageOfTheDayModel } from "../models/messageOfTheDay";
 import castObjectId from "../utils/castObjectId";
 

@@ -1,7 +1,13 @@
 import { faker } from "@faker-js/faker";
 import mongoose from "mongoose";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { createMotd, fetchLatestMotd, fetchMotd, updateMotd } from "../src/services/motd.services";
+import {
+  createMotd,
+  fetchLatestMotd,
+  fetchMotd,
+  removeMotd,
+  updateMotd,
+} from "../src/services/motd.services";
 import TestApp from "./utils/testApp";
 
 describe("Message of the Day", () => {
@@ -145,6 +151,32 @@ describe("Message of the Day", () => {
           expect(motd?.message).not.toEqual(foundMotd?.message);
           expect(motd?.updatedAt).not.toEqual(foundMotd?.updatedAt);
         }
+      });
+    });
+
+    describe("remove", () => {
+      test("empty ID", async () => {
+        const result = await removeMotd("");
+        expect(result).toBeFalsy();
+      });
+
+      test("invalid ID", async () => {
+        const result = await removeMotd("BADID");
+        expect(result).toBeFalsy();
+      });
+
+      test("valid ID", async () => {
+        const motd = await createMotd(faker.hacker.phrase());
+        expect(motd).toBeTruthy();
+
+        const result = await removeMotd(motd?._id);
+        expect(result).toBeTruthy();
+
+        const afterRemovingResult = await removeMotd(motd?._id);
+        expect(afterRemovingResult).toBeFalsy();
+
+        const removedMotd = await fetchMotd(motd?._id);
+        expect(removedMotd).toBeFalsy();
       });
     });
   });

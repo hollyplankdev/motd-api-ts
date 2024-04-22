@@ -7,13 +7,14 @@
     "dev:up": "docker compose -f compose-local.yaml up -d --build --remove-orphans",
     "dev:down": "docker compose -f compose-local.yaml down",
     "start": "tsx src/index.ts",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest watch"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@types/express": "^4.17.21",
     "@types/supertest": "^6.0.2",
+    "@vitest/coverage-v8": "^1.5.0",
     "mongodb-memory-server": "^9.2.0",
     "supertest": "^6.3.4",
     "tsx": "^4.7.1",

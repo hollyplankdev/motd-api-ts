@@ -72,7 +72,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/MOTD"
         "400":
-          description: No ID provided.
+          description: Malformatted ID provided.
         "404":
           description: No MOTD by that ID found.
     patch:

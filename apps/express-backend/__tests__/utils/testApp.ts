@@ -1,5 +1,6 @@
 import * as http from "http";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 import runApp from "../../src/app";
 import { API_SPEC_PATH } from "../../src/config/apiValidator.config";
 
@@ -34,5 +35,6 @@ export default class TestApp {
 
     // Stop the in-memory test DB
     if (this.mongod) await this.mongod.stop();
+    await mongoose.disconnect();
   }
 }

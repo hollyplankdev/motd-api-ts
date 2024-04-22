@@ -6,9 +6,11 @@ import { MessageOfTheDayModel } from "../models/messageOfTheDay";
  * Create a new MOTD in the database.
  *
  * @param message The message text of the new MOTD to create.
- * @returns The newly created MOTD in the database.
+ * @returns The newly created MOTD in the database, null if missing a param.
  */
-export async function createMotd(message: string): Promise<MessageOfTheDay> {
+export async function createMotd(message: string): Promise<MessageOfTheDay | null> {
+  if (!message) return null;
+
   return (await MessageOfTheDayModel.create({ message })).toObject({
     versionKey: false,
     flattenObjectIds: true,

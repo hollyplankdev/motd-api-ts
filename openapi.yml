@@ -92,6 +92,25 @@ paths:
           description: Missing or invalid fields.
         "404":
           description: No MOTD by that ID found.
+    delete:
+      summary: Remove specific MOTD
+      description: Removes a specific message of the day.
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the MOTD to remove.
+          required: true
+          schema:
+            type: string
+            format: mongo-objectid
+            example: fMW0PcHRJGUtUnadq4mvy
+      responses:
+        "200":
+          description: The MOTD with the matching ID was removed.
+        "400":
+          description: No ID provided.
+        "404":
+          description: No MOTD by that ID found.
   /history:
     get:
       summary: Get previous MOTDs

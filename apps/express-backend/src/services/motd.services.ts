@@ -29,7 +29,7 @@ export async function fetchLatestMotd(): Promise<MessageOfTheDay | null> {
   if (!motd) return null;
 
   // Simplify and return the MOTD
-  return motd.toObject({ versionKey: false });
+  return motd.toObject({ versionKey: false, flattenObjectIds: true });
 }
 
 /**
@@ -49,7 +49,7 @@ export async function fetchMotd(
   if (!motd) return null;
 
   // Simplify and return the MOTD
-  return motd.toObject({ versionKey: false });
+  return motd.toObject({ versionKey: false, flattenObjectIds: true });
 }
 
 /**
@@ -75,7 +75,7 @@ export async function updateMotd(
   await motd.save();
 
   // Simplify and return the updated MOTD
-  return motd.toObject({ versionKey: false });
+  return motd.toObject({ versionKey: false, flattenObjectIds: true });
 }
 
 /**

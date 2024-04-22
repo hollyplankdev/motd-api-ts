@@ -32,6 +32,7 @@
       "error",
       { "argsIgnorePattern": "event|context|req|res" }
     ],
+    "no-underscore-dangle": 0,
     "@typescript-eslint/no-restricted-imports": [
       2,
       {

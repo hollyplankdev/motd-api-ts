@@ -11,10 +11,9 @@ export const create: RequestHandler = async (req, res) => {
   res.status(200).contentType("json").send(plainMotd);
 };
 
-export const readLatest: RequestHandler = async (req, res) => {};
-
-export const read: RequestHandler = async (req, res) => {
-  const motd = await MessageOfTheDayModel.findById(req.params.id);
+export const readLatest: RequestHandler = async (req, res) => {
+  const motd = await MessageOfTheDayModel.findOne().sort({ createdAt: "descending" });
+  console.log(`Read latest MOTD (${motd?._id})`);
 
   // If there's no MOTD... EXIT EARLY!
   if (!motd) {
@@ -22,8 +21,22 @@ export const read: RequestHandler = async (req, res) => {
     return;
   }
 
-  // Turn into an object without the verison key and SEND!
-  console.log(`Read MOTD w/ id ${motd._id}`);
+  // Turn into an object without the version key and SEND!
+  const plainMotd = motd.toObject({ versionKey: false });
+  res.status(200).send(plainMotd);
+};
+
+export const read: RequestHandler = async (req, res) => {
+  const motd = await MessageOfTheDayModel.findById(req.params.id);
+  console.log(`Read MOTD w/ id ${req.params.id}`);
+
+  // If there's no MOTD... EXIT EARLY!
+  if (!motd) {
+    res.status(404).send();
+    return;
+  }
+
+  // Turn into an object without the version key and SEND!
   const plainMotd = motd.toObject({ versionKey: false });
   res.status(200).send(plainMotd);
 };

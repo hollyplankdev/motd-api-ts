@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RequestHandler } from "express";
 
 export const create: RequestHandler = async (req, res) => {};

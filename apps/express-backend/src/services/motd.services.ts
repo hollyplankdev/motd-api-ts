@@ -39,7 +39,7 @@ export async function fetchLatestMotd(): Promise<MessageOfTheDay | null> {
  * @returns The MOTD with the matching id, null if there isn't one.
  */
 export async function fetchMotd(
-  id: string | mongoose.Types.ObjectId,
+  id: string | mongoose.Types.ObjectId | undefined,
 ): Promise<MessageOfTheDay | null> {
   const correctedId = castObjectId(id);
   if (!correctedId) return null;
@@ -60,11 +60,12 @@ export async function fetchMotd(
  * @returns The newly updated MOTD if one matched the given id, null if there isn't one.
  */
 export async function updateMotd(
-  id: string | mongoose.Types.ObjectId,
+  id: string | mongoose.Types.ObjectId | undefined,
   newMessage: string,
 ): Promise<MessageOfTheDay | null> {
   const correctedId = castObjectId(id);
   if (!correctedId) return null;
+  if (!newMessage) return null;
 
   // Get the existing MOTD. If there is none, EXIT EARLY.
   const motd = await MessageOfTheDayModel.findById(correctedId);
@@ -84,7 +85,9 @@ export async function updateMotd(
  * @param id The ID of the MOTD to delete.
  * @returns True if a MOTD was found and removed, false otherwise.
  */
-export async function removeMotd(id: string | mongoose.Types.ObjectId): Promise<boolean> {
+export async function removeMotd(
+  id: string | mongoose.Types.ObjectId | undefined,
+): Promise<boolean> {
   const correctedId = castObjectId(id);
   if (!correctedId) return false;
 

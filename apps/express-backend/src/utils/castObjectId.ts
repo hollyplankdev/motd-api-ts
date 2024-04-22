@@ -9,8 +9,10 @@ import mongoose from "mongoose";
  * @returns The ObjectId object for this id if correctly formatted, null otherwise.
  */
 export default function castObjectId(
-  id: string | mongoose.Types.ObjectId,
+  id: string | mongoose.Types.ObjectId | undefined,
 ): mongoose.Types.ObjectId | null {
+  if (!id) return null;
+
   // If the ID is already the ObjectId type, RETURN IT
   if (typeof id !== "string") return id;
 

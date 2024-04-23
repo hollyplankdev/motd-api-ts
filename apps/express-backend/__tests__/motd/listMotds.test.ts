@@ -41,16 +41,17 @@ describe("listMotds", () => {
 
     // Paginate through the EVERYTHING, and collect results.
     const motdsFoundFromListing: MessageOfTheDay[] = [];
-    let lastPageKey: number | undefined;
+    let lastId: string | undefined;
     do {
       // eslint-disable-next-line no-await-in-loop
-      const results = await listMotds({ pageSize: 8, lastPageKey });
+      const results = await listMotds({ pageSize: 8, previousLastId: lastId });
 
       results.items.forEach((item) => motdsFoundFromListing.push(item));
-      lastPageKey = results.pageKey;
-    } while (lastPageKey);
+      lastId = results.lastId;
+    } while (lastId);
 
     expect(motdsFoundFromListing).toHaveLength(allMotds.length);
+    expect(motdsFoundFromListing).toEqual(expect.arrayContaining(allMotds));
   });
 
   it("returns results in descending order");

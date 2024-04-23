@@ -135,12 +135,13 @@ paths:
       description: Get a list of previous message of the days, sorted by newest to oldest. Results are paginated.
       parameters:
         - in: query
-          name: lastPageKey
-          description: If paginating, the value of the `pageKey` from the previous request.
+          name: previousLastId
+          description: If paginating, the value of the `lastId` from the previous request.
           required: false
           schema:
-            type: integer
-            example: 1704829257257
+            type: string
+            format: mongo-objectid
+            example: fMW0PcHRJGUtUnadq4mvy
         - in: query
           name: pageSize
           description: If paginating, the max number of entries per-page.
@@ -152,15 +153,16 @@ paths:
             default: 8
       responses:
         "200":
-          description: A list of MOTDs (after `lastPageKey`, if provided)
+          description: A list of MOTDs (after `previousLastId`, if provided)
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  pageKey:
-                    type: integer
-                    example: 1704829257257
+                  lastId:
+                    type: string
+                    format: mongo-objectid
+                    example: fMW0PcHRJGUtUnadq4mvy
                   items:
                     type: array
                     items:

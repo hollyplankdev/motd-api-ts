@@ -104,20 +104,20 @@ export const remove: RequestHandler = async (req, res) => {
 /**
  * Lists existing MOTDs, sorted by date in descending order. Results are paginated.
  *
- * @param req.query.lastPageKey OPTIONAL - The page key to start at, if paginating. This should be
- *   the value of `pageKey` from a previous call.
+ * @param req.query.previousLastId OPTIONAL - The page key to start at, if paginating. This should
+ *   be the value of `lastId` from a previous call.
  * @param req.query.pageSize OPTIONAL - The max number of entries per-page.
  */
 export const list: RequestHandler = async (req, res) => {
   console.log(`Trying to list MOTDs...`);
   const result = await listMotds({
-    lastPageKey: req.query.lastPageKey ? parseInt(req.query.lastPageKey as string, 10) : undefined,
+    previousLastId: req.query.previousLastId as string,
     pageSize: parseInt(req.query.pageSize as string, 10),
   });
 
   res
     .status(200)
     .contentType("json")
-    .send(JSON.stringify({ pageKey: result.pageKey, items: result.items }));
+    .send(JSON.stringify({ lastId: result.lastId, items: result.items }));
   console.log(`...Listed ${result.items.length} MOTDs`);
 };

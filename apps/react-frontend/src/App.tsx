@@ -2,8 +2,8 @@ import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
+import LatestMotdDisplay from "./features/motd/LatestMotdDisplay";
 import theme from "./theme";
-import MessageOfTheDay from "./features/motd/MotdDisplay";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +14,7 @@ function App() {
         <div className="App">
           <div className="AppContainer">
             <div className="CenterPanel">
-              <MessageOfTheDay />
+              <LatestMotdDisplay />
             </div>
           </div>
         </div>

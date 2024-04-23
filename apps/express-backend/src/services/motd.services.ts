@@ -112,11 +112,11 @@ export async function listMotds(args: {
 }): Promise<{ lastId?: string; items: MessageOfTheDay[] }> {
   // Create the search query depending on if we have a starting page key
   const searchQuery: FilterQuery<MessageOfTheDay> = {};
-  if (args.previousLastId) searchQuery._id = { $gt: args.previousLastId };
+  if (args.previousLastId) searchQuery._id = { $lt: args.previousLastId };
 
   // Search for MOTDs, making sure to search in order and start/stop in a paginated way.
   const foundItems = (
-    await MessageOfTheDayModel.find(searchQuery).limit(args.pageSize).sort("_id")
+    await MessageOfTheDayModel.find(searchQuery).limit(args.pageSize).sort("-_id")
   ).map((fullItem) => fullItem.toObject({ versionKey: false, flattenObjectIds: true }));
 
   return {

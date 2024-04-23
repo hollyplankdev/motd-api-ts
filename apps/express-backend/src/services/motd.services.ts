@@ -102,37 +102,30 @@ export async function removeMotd(
  *
  * @param args.pageSize The number of items to return per-page. While paginating, this value should
  *   stay the same.
- * @param args.lastPageKey OPTIONAL - The value of `pageKey` from a previous call. Use this while
+ * @param args.previousLastId OPTIONAL - The value of `lastId` from a previous call. Use this while
  *   paginating to progress through pages of results.
  * @returns A single page of listed results.
  */
 export async function listMotds(args: {
-  lastPageKey?: number;
+  previousLastId?: string | mongoose.Types.ObjectId;
   pageSize: number;
-}): Promise<{ pageKey?: number; items: MessageOfTheDay[] }> {
+}): Promise<{ lastId?: string; items: MessageOfTheDay[] }> {
+  if (args.pageSize <= 0 || Number.isNaN(args.pageSize)) return { items: [] };
+
   // Create the search query depending on if we have a starting page key
   const searchQuery: FilterQuery<MessageOfTheDay> = {};
-  if (args.lastPageKey) {
-    // Last page key is actually just the createdAt date of the last processed
-    // document, encoded as an integer - so that's why we parse it here.
-    searchQuery.createdAt = { $lt: new Date(args.lastPageKey) };
-  }
+  if (args.previousLastId) searchQuery._id = { $lt: args.previousLastId };
 
   // Search for MOTDs, making sure to search in order and start/stop in a paginated way.
-  const foundItems = await MessageOfTheDayModel.find(searchQuery)
-    .limit(args.pageSize)
-    .sort("-createdAt")
-    .select("-__v")
-    .lean();
-
-  // Calculate the lastPageKey of THIS REQUEST. The page key is just the createdAt date of the
-  // last processed document, encoded as an integer.
-  const rawPageKey =
-    foundItems.length > 0 ? foundItems[foundItems.length - 1].createdAt : undefined;
-  const pageKey = rawPageKey ? rawPageKey.valueOf() : undefined;
+  // We don't sort by createdAt because it's possible for documents to have the same timestamp,
+  // which screws up paginating. Instead we rely on ObjectIds property of being ORDERED & unique to
+  // determine how to progress a cursor through the DB.
+  const foundItems = (
+    await MessageOfTheDayModel.find(searchQuery).limit(args.pageSize).sort("-_id")
+  ).map((fullItem) => fullItem.toObject({ versionKey: false, flattenObjectIds: true }));
 
   return {
-    pageKey,
+    lastId: foundItems.length > 0 ? foundItems[foundItems.length - 1]._id : undefined,
     items: foundItems,
   };
 }

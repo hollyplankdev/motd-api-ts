@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import * as http from "http";
 import { connect as mongooseConnect } from "mongoose";
@@ -33,6 +34,7 @@ async function runApp(
   //  Middleware
   //
 
+  app.use(cors());
   app.use(express.json());
   app.use(createOpenApiValidatorMiddleware(args.apiSpecPath));
 

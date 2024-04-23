@@ -11,5 +11,11 @@ export default function LatestMotdDisplay() {
     return "done";
   };
 
-  return <MotdDisplay motd={query.data} loadState={getLoadStateFromQuery()} />;
+  return (
+    <MotdDisplay
+      motd={query.data}
+      loadState={getLoadStateFromQuery()}
+      errorMessage={query.error?.toString()}
+    />
+  );
 }

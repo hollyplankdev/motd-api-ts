@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import LatestMotdDisplay from "./features/motd/LatestMotdDisplay";
 import theme from "./theme";
+import HistoryPanel from "./features/history/HistoryPanel";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ function App() {
       <MantineProvider theme={theme} defaultColorScheme="dark">
         <ModalsProvider>
           <div className="App">
+            <HistoryPanel />
             <div className="AppContainer">
               <div className="CenterPanel">
                 <LatestMotdDisplay />

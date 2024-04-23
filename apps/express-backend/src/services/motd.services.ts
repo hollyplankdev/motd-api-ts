@@ -115,6 +115,9 @@ export async function listMotds(args: {
   if (args.previousLastId) searchQuery._id = { $lt: args.previousLastId };
 
   // Search for MOTDs, making sure to search in order and start/stop in a paginated way.
+  // We don't sort by createdAt because it's possible for documents to have the same timestamp,
+  // which screws up paginating. Instead we rely on ObjectIds property of being ORDERED & unique to
+  // determine how to progress a cursor through the DB.
   const foundItems = (
     await MessageOfTheDayModel.find(searchQuery).limit(args.pageSize).sort("-_id")
   ).map((fullItem) => fullItem.toObject({ versionKey: false, flattenObjectIds: true }));

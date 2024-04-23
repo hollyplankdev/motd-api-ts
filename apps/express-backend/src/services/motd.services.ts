@@ -110,6 +110,8 @@ export async function listMotds(args: {
   previousLastId?: string | mongoose.Types.ObjectId;
   pageSize: number;
 }): Promise<{ lastId?: string; items: MessageOfTheDay[] }> {
+  if (args.pageSize <= 0 || Number.isNaN(args.pageSize)) return { items: [] };
+
   // Create the search query depending on if we have a starting page key
   const searchQuery: FilterQuery<MessageOfTheDay> = {};
   if (args.previousLastId) searchQuery._id = { $lt: args.previousLastId };

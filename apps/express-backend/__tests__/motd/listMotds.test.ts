@@ -97,6 +97,32 @@ describe("listMotds", () => {
       }),
     );
   });
+
+  it("can't use negative pageSize", async () => {
+    // Create a bunch of dummy MOTDs
+    await Promise.all(
+      faker.helpers
+        .multiple(faker.hacker.phrase, { count: 16 })
+        .map(async (phrase) => createMotd(phrase)),
+    );
+
+    const results = await listMotds({ pageSize: -1 });
+    expect(results.lastId).toBeFalsy();
+    expect(results.items).toHaveLength(0);
+  });
+
+  it("can't use NaN pageSize", async () => {
+    // Create a bunch of dummy MOTDs
+    await Promise.all(
+      faker.helpers
+        .multiple(faker.hacker.phrase, { count: 16 })
+        .map(async (phrase) => createMotd(phrase)),
+    );
+
+    const results = await listMotds({ pageSize: NaN });
+    expect(results.lastId).toBeFalsy();
+    expect(results.items).toHaveLength(0);
+  });
 });
 
 describe("GET `/history`", () => {

@@ -14,9 +14,7 @@ function App() {
         <div className="App">
           <div className="AppContainer">
             <div className="CenterPanel">
-              <h1>Hello World!</h1>
               <MessageOfTheDay />
-              <body>Wow.</body>
             </div>
           </div>
         </div>

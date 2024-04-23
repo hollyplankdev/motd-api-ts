@@ -3,6 +3,7 @@ import "@mantine/core/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import theme from "./theme";
+import MessageOfTheDay from "./features/motd/MotdDisplay";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,8 @@ function App() {
           <div className="AppContainer">
             <div className="CenterPanel">
               <h1>Hello World!</h1>
-              <body>This is a test app...</body>
+              <MessageOfTheDay />
+              <body>Wow.</body>
             </div>
           </div>
         </div>

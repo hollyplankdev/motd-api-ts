@@ -21,8 +21,8 @@ describe("listMotds", () => {
   //
 
   it("excludes pageKey when no results", async () => {
-    const { pageKey } = await listMotds({ pageSize: 8 });
-    expect(pageKey).toBeFalsy();
+    const { lastId } = await listMotds({ pageSize: 8 });
+    expect(lastId).toBeFalsy();
   });
 
   it("returns empty array when no results", async () => {
@@ -81,7 +81,22 @@ describe("listMotds", () => {
     }
   });
 
-  it("doesn't exceed pageSize");
+  it("doesn't exceed pageSize", async () => {
+    // Create a bunch of dummy MOTDs
+    await Promise.all(
+      faker.helpers
+        .multiple(faker.hacker.phrase, { count: 256 })
+        .map(async (phrase) => createMotd(phrase)),
+    );
+
+    // Try out a bunch of different page sizes
+    await Promise.all(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(async (pageSize) => {
+        const results = await listMotds({ pageSize });
+        expect(results.items).toHaveLength(pageSize);
+      }),
+    );
+  });
 });
 
 describe("GET `/history`", () => {

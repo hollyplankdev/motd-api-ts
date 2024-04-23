@@ -106,6 +106,9 @@ importers:
       '@mantine/hooks':
         specifier: ^7.6.2
         version: 7.8.1(react@18.2.0)
+      '@mantine/modals':
+        specifier: ^7.8.1
+        version: 7.8.1(@mantine/core@7.8.1)(@mantine/hooks@7.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@motd-ts/models':
         specifier: workspace:*
         version: link:../../packages/models
@@ -2330,6 +2333,20 @@ packages:
       react: ^18.2.0
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /@mantine/modals@7.8.1(@mantine/core@7.8.1)(@mantine/hooks@7.8.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FCr7c3kLacE8YZhFMRWTRGOPAMDqVeUz6udmHzy0ucxkuPDkRf2p5D/9vZXDBf1u7zx1M6y5V/9g93PUfkxf+w==}
+    peerDependencies:
+      '@mantine/core': 7.8.1
+      '@mantine/hooks': 7.8.1
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@mantine/core': 7.8.1(@mantine/hooks@7.8.1)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@mantine/hooks': 7.8.1(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@mongodb-js/saslprep@1.1.5:

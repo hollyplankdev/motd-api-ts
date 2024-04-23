@@ -168,7 +168,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/MOTD"
         "400":
-          description: Malformed `lastPageKey`.
+          description: Malformed `previousLastId` or `pageSize`.
 
 components:
   schemas:

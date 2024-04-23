@@ -1,9 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
-import mongoose from "mongoose";
 import supertest from "supertest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createMotd, fetchMotd, listMotds } from "../../src/services/motd.services";
+import { createMotd, listMotds } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
 
 describe("listMotds", () => {
@@ -139,8 +138,66 @@ describe("GET `/history`", () => {
   //  Tests
   //
 
-  it("200 when no MOTDs");
-  it("200 when MOTDs exist");
-  it("200 when MOTDs exist and using lastPageKey");
-  it("400 when no malformed lastPageKey used");
+  it("200 when no MOTDs", async () => {
+    const response = await supertest(testApp.server).get("/history");
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.lastId).toBeFalsy();
+    expect(response.body.items).toHaveLength(0);
+  });
+
+  it("200 when MOTDs exist", async () => {
+    // Create a bunch of dummy MOTDs
+    const allMotds = await Promise.all(
+      faker.helpers
+        .multiple(faker.hacker.phrase, { count: 128 })
+        // We stringify then parse to emulate how the object would get flattened
+        .map(async (phrase) => JSON.parse(JSON.stringify(await createMotd(phrase)))),
+    );
+
+    const response = await supertest(testApp.server).get("/history");
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.lastId).toBeTruthy();
+    expect(response.body.items.length).toBeGreaterThan(0);
+    expect(allMotds).toEqual(expect.arrayContaining(response.body.items));
+  });
+
+  it("200 when MOTDs exist and using previousLastId", async () => {
+    // Create a bunch of dummy MOTDs
+    const allMotds = await Promise.all(
+      faker.helpers
+        .multiple(faker.hacker.phrase, { count: 128 })
+        // We stringify then parse to emulate how the object would get flattened
+        .map(async (phrase) => JSON.parse(JSON.stringify(await createMotd(phrase)))),
+    );
+
+    // Paginate through the EVERYTHING, and collect results.
+    const motdsFoundFromListing: MessageOfTheDay[] = [];
+    let lastId: string | undefined;
+    do {
+      let request = supertest(testApp.server).get(`/history`);
+      if (lastId) request = request.query({ previousLastId: lastId });
+
+      // eslint-disable-next-line no-await-in-loop
+      const response = await request;
+      response.body.items.forEach((item) => motdsFoundFromListing.push(item));
+      lastId = response.body.lastId;
+    } while (lastId);
+
+    expect(motdsFoundFromListing).toHaveLength(allMotds.length);
+    expect(allMotds).toEqual(expect.arrayContaining(motdsFoundFromListing));
+  });
+
+  it("400 when malformed previousLastId used", async () => {
+    const response = await supertest(testApp.server)
+      .get("/history")
+      .query({ previousLastId: "BADID" });
+    expect(response.statusCode).toEqual(400);
+  });
+
+  it("400 when non-number used for pageSize", async () => {
+    const response = await supertest(testApp.server)
+      .get("/history")
+      .query({ pageSize: "thisIsWrong" });
+    expect(response.statusCode).toEqual(400);
+  });
 });

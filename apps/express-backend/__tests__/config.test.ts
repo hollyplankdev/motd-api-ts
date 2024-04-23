@@ -7,6 +7,7 @@ import { HTTP_PORT } from "../src/config/http.config";
 describe("API Validator Config", () => {
   describe("the API spec", () => {
     it("should resolve to a real file", async () => {
+      expect(false).toBeTruthy();
       await expect(fs.access(API_SPEC_PATH, fs.constants.R_OK)).resolves.not.toThrow();
     });
     it("can be parsed", () => {

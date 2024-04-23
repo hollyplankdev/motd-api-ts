@@ -3,7 +3,7 @@ import { getLatestMotd } from "../../api/motd";
 import { MotdDisplay, MotdDisplayProps } from "./MotdDisplay";
 
 export default function LatestMotdDisplay() {
-  const query = useQuery({ queryKey: ["getLatestMotd"], queryFn: getLatestMotd });
+  const query = useQuery({ queryKey: ["motd", "latest"], queryFn: getLatestMotd });
 
   const getLoadStateFromQuery = (): MotdDisplayProps["loadState"] => {
     if (query.isError) return "error";

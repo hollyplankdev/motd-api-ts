@@ -1,6 +1,7 @@
-import { Blockquote } from "@mantine/core";
+import { ActionIcon, Blockquote, Button } from "@mantine/core";
 import { MessageOfTheDay } from "@motd-ts/models";
-import { IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
+import { IconAdjustments, IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
+import styles from "./MotdDisplay.module.css";
 
 export interface MotdDisplayProps {
   /**
@@ -20,12 +21,16 @@ export interface MotdDisplayProps {
 
   /** OPTIONAL - the message to show when there is an error. */
   errorMessage?: string;
+
+  /** Can this MOTD be edited? */
+  isEditable?: boolean;
 }
 
 export function MotdDisplay(args: MotdDisplayProps) {
   // Unpack properties and apply defaults
-  const { motd, timeBeforeCiteUpdate, loadState, errorMessage } = {
+  const { motd, timeBeforeCiteUpdate, loadState, errorMessage, isEditable } = {
     timeBeforeCiteUpdate: 60,
+    isEditable: false,
     ...args,
   };
 
@@ -69,8 +74,16 @@ export function MotdDisplay(args: MotdDisplayProps) {
   }
 
   return (
-    <Blockquote icon={icon} cite={citeText} radius="xl" color={color}>
-      {quoteText}
-    </Blockquote>
+    <div className={styles.motd}>
+      <Blockquote icon={icon} cite={citeText} radius="xl" color={color}>
+        {quoteText}
+      </Blockquote>
+
+      {isEditable ? (
+        <ActionIcon className={styles.editButton}>
+          <IconAdjustments style={{ width: "70%" }} />
+        </ActionIcon>
+      ) : undefined}
+    </div>
   );
 }

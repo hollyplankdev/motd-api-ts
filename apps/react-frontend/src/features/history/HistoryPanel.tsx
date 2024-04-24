@@ -15,7 +15,7 @@ export default function HistoryPanel() {
 
   return (
     <div className={styles.container}>
-      <Drawer opened={opened} onClose={close} position="left" title="MOTD History">
+      <Drawer opened={opened} onClose={close} position="left" size="lg" title="MOTD History">
         {query.data.map((motd) => (
           <MotdDisplay key={motd._id} motd={motd} loadState="done" isEditable />
         ))}

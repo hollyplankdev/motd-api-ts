@@ -1,10 +1,9 @@
-import { ActionIcon, Blockquote, Button } from "@mantine/core";
+import { ActionIcon, Blockquote, Group, Modal, Stack, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { MessageOfTheDay } from "@motd-ts/models";
 import { IconAdjustments, IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
-import { Modal } from "@mantine/core";
-import styles from "./MotdDisplay.module.css";
-import { useDisclosure } from "@mantine/hooks";
 import { EditMotdForm } from "./EditMotdForm";
+import styles from "./MotdDisplay.module.css";
 
 export interface MotdDisplayProps {
   /**
@@ -37,18 +36,18 @@ export function MotdDisplay(args: MotdDisplayProps) {
     ...args,
   };
 
-  // Use the origin date of the MOTD as it's cite field.
-  let citeText: string = "";
+  // Create text showing when this MOTD was posted
+  let createdAtText: string = "";
   if (motd) {
-    citeText += `From ${motd.createdAt.toDateString()}.`;
-    if (motd.updatedAt.getTime() - motd.createdAt.getTime() > timeBeforeCiteUpdate) {
-      citeText += ` Revised on ${motd.updatedAt.toDateString()}.`;
-    }
+    createdAtText += `From ${motd.createdAt.toLocaleDateString()}`;
+    createdAtText += ` at ${motd.createdAt.toLocaleTimeString()}.`;
+  }
 
-    // Show ID if editable
-    if (isEditable) {
-      citeText += `\n${motd._id}`;
-    }
+  // Create text showing when this MOTD was edited
+  let editedAtText: string = "";
+  if (motd && motd.updatedAt.getTime() - motd.createdAt.getTime() > timeBeforeCiteUpdate) {
+    editedAtText += ` Edited ${motd.updatedAt.toLocaleDateString()}`;
+    editedAtText += ` at ${motd.updatedAt.toLocaleTimeString()}.`;
   }
 
   // Use the message of the MOTD to populate the quote contents
@@ -86,8 +85,25 @@ export function MotdDisplay(args: MotdDisplayProps) {
 
   return (
     <div className={styles.motd}>
-      <Blockquote icon={icon} cite={citeText} radius="xl" color={color}>
-        {quoteText}
+      <Blockquote icon={icon} radius="xl" color={color}>
+        <Stack>
+          <Text size="xl" fw={700}>
+            {quoteText}
+          </Text>
+          <Group justify="space-between">
+            <Text size="s" c="dimmed" fs="italic">
+              {createdAtText}
+            </Text>
+            <Text size="xs" c="dimmed" fs="italic">
+              {editedAtText}
+            </Text>
+          </Group>
+          {isEditable ? (
+            <Text size="xs" c="dimmed" fs="italic">
+              {motd?._id}
+            </Text>
+          ) : undefined}
+        </Stack>
       </Blockquote>
 
       {isEditable && loadState === "done" ? (
@@ -97,7 +113,7 @@ export function MotdDisplay(args: MotdDisplayProps) {
       ) : undefined}
 
       <Modal opened={isEditModalOpen} onClose={closeEditModal} title={`Edit MOTD "${motd?._id}"`}>
-        <EditMotdForm motd={motd} />
+        <EditMotdForm motd={motd} onComplete={closeEditModal} />
       </Modal>
     </div>
   );

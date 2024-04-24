@@ -51,4 +51,12 @@ export async function getAllMotdHistory(): Promise<MessageOfTheDay[]> {
   return foundItems;
 }
 
-export function getMotd() {}
+/** Update the properties of a MOTD in the API. */
+export async function updateMotd(
+  id: string,
+  newProps: { message?: string },
+): Promise<MessageOfTheDay | undefined> {
+  const response = await axios.patch(`${address}/${id}`, newProps);
+  if (response.status !== 200) return undefined;
+  return inflateMessageOfTheDay(response.data);
+}

@@ -25,7 +25,10 @@ export function EditMotdForm(args: EditMotdFormProps) {
   const updateMotdMutation = useMutation({
     mutationFn: (mutationArgs: { id: string; newProps: { message?: string } }) =>
       updateMotd(mutationArgs.id, mutationArgs.newProps),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["motd", "history"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["motd", "history"] });
+      queryClient.invalidateQueries({ queryKey: ["motd", "latest"] });
+    },
   });
 
   // Setup loading spinner for submitting

@@ -41,6 +41,11 @@ export function MotdDisplay(args: MotdDisplayProps) {
     if (motd.updatedAt.getTime() - motd.createdAt.getTime() > timeBeforeCiteUpdate) {
       citeText += ` Revised on ${motd.updatedAt.toDateString()}.`;
     }
+
+    // Show ID if editable
+    if (isEditable) {
+      citeText += `\n${motd._id}`;
+    }
   }
 
   // Use the message of the MOTD to populate the quote contents

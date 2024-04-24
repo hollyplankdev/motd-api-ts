@@ -60,3 +60,12 @@ export async function updateMotd(
   if (response.status !== 200) return undefined;
   return inflateMessageOfTheDay(response.data);
 }
+
+/** Create a new MOTD in the API. */
+export async function createMotd(properties: {
+  message: string;
+}): Promise<MessageOfTheDay | undefined> {
+  const response = await axios.post(`${address}`, properties);
+  if (response.status !== 200) return undefined;
+  return inflateMessageOfTheDay(response.data);
+}

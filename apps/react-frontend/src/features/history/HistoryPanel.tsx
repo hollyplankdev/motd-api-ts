@@ -1,12 +1,14 @@
-import { Button, Drawer } from "@mantine/core";
+import { Button, Drawer, Group, Modal, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getAllMotdHistory } from "../../api/motd";
 import { MotdDisplay } from "../motd/MotdDisplay";
 import styles from "./HistoryPanel.module.css";
+import { NewMotdForm } from "../motd/NewMotdForm";
 
 export default function HistoryPanel() {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [isHistoryOpen, { open: openHistory, close: closeHistory }] = useDisclosure(false);
+  const [isCreateNewOpen, { open: openCreateNew, close: closeCreateNew }] = useDisclosure(false);
   const query = useQuery({
     queryKey: ["motd", "history"],
     queryFn: getAllMotdHistory,
@@ -15,14 +17,30 @@ export default function HistoryPanel() {
 
   return (
     <div className={styles.container}>
-      <Drawer opened={opened} onClose={close} position="left" size="lg" title="MOTD History">
-        {query.data.map((motd) => (
-          <MotdDisplay key={motd._id} motd={motd} loadState="done" isEditable />
-        ))}
+      <Drawer
+        opened={isHistoryOpen}
+        onClose={closeHistory}
+        position="left"
+        size="lg"
+        title="MOTD History"
+      >
+        <Stack>
+          <Group justify="end">
+            <Button onClick={openCreateNew}>Create New</Button>
+          </Group>
+          {query.data.map((motd) => (
+            <MotdDisplay key={motd._id} motd={motd} loadState="done" isEditable />
+          ))}
+        </Stack>
       </Drawer>
-      <Button className={styles.panelButton} onClick={open}>
-        History
-      </Button>
+
+      <Modal title="Write a Message of the Day" opened={isCreateNewOpen} onClose={closeCreateNew}>
+        <NewMotdForm onComplete={closeCreateNew} />
+      </Modal>
+
+      <Stack className={styles.panelButton}>
+        <Button onClick={openHistory}>History</Button>
+      </Stack>
     </div>
   );
 }

@@ -1,7 +1,10 @@
 import { ActionIcon, Blockquote, Button } from "@mantine/core";
 import { MessageOfTheDay } from "@motd-ts/models";
 import { IconAdjustments, IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
+import { Modal } from "@mantine/core";
 import styles from "./MotdDisplay.module.css";
+import { useDisclosure } from "@mantine/hooks";
+import { EditMotdForm } from "./EditMotdForm";
 
 export interface MotdDisplayProps {
   /**
@@ -78,17 +81,24 @@ export function MotdDisplay(args: MotdDisplayProps) {
     color = "red";
   }
 
+  // Setup logic for the editing modal
+  const [isEditModalOpen, { open: openEditModal, close: closeEditModal }] = useDisclosure(false);
+
   return (
     <div className={styles.motd}>
       <Blockquote icon={icon} cite={citeText} radius="xl" color={color}>
         {quoteText}
       </Blockquote>
 
-      {isEditable ? (
-        <ActionIcon className={styles.editButton}>
+      {isEditable && loadState === "done" ? (
+        <ActionIcon className={styles.editButton} onClick={openEditModal}>
           <IconAdjustments style={{ width: "70%" }} />
         </ActionIcon>
       ) : undefined}
+
+      <Modal opened={isEditModalOpen} onClose={closeEditModal} title={`Edit MOTD "${motd?._id}"`}>
+        <EditMotdForm motd={motd} />
+      </Modal>
     </div>
   );
 }

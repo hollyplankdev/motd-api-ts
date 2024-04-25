@@ -1,7 +1,7 @@
 import { ActionIcon, Flex, Group, Modal, Paper, Space, Stack, Text, alpha } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MessageOfTheDay } from "@motd-ts/models";
-import { IconAdjustments, IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
+import { IconAdjustments, IconError404 } from "@tabler/icons-react";
 import { EditMotdForm } from "./EditMotdForm";
 import styles from "./MotdDisplay.module.css";
 

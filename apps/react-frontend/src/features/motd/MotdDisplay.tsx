@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Group, Modal, Paper, Stack, Text } from "@mantine/core";
+import { ActionIcon, Flex, Group, Modal, Paper, Space, Stack, Text, alpha } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MessageOfTheDay } from "@motd-ts/models";
 import { IconAdjustments, IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
@@ -80,18 +80,22 @@ export function MotdDisplay(args: MotdDisplayProps) {
   return (
     <div className={styles.motd}>
       <Paper
-        radius={size === "large" ? "xl" : "lg"}
+        radius={size === "large" ? "xl" : "md"}
         shadow="lg"
         withBorder
-        style={{ padding: "40px" }}
+        style={{
+          padding: "33px",
+          backgroundColor: alpha("#FFFFFF", 0.9),
+        }}
       >
         <Stack>
           <Flex align="center" gap="xl">
             {loadState === "error" ? <IconError404 color={color} size={100} /> : undefined}
-            <Text size={size === "large" ? "50px" : "lg"} fw={700}>
+            <Text size={size === "large" ? "50px" : "lg"} fw={800}>
               {quoteText}
             </Text>
           </Flex>
+          <Space />
           <Group justify="space-between">
             <Text size="s" c="dimmed" fs="italic">
               {createdAtText}

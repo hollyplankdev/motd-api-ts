@@ -1,7 +1,19 @@
+body,
+html,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
 .App {
-  text-align: center;
   background-color: black;
-  color: white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  min-width: 100%;
+  margin: 0;
 }
 
 .AppContainer {
@@ -10,16 +22,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.AppBackground {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 .CenterPanel {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-width: 2px;
+  /* position: absolute; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  margin: 64px;
+  max-width: 600px;
+  /* border-width: 2px;
   border-color: aqua;
-  border-style: dashed;
+  border-style: dashed; */
 }
-

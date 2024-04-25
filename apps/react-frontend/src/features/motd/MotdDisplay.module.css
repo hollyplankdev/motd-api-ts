@@ -1,0 +1,9 @@
+.motd {
+  padding: 10px;
+}
+
+.editButton {
+  float: right;
+  bottom: 50px;
+  right: 20px;
+}

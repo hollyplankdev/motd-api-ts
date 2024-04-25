@@ -1,4 +1,4 @@
-import { Button, Drawer, Group, Modal, Paper, Stack } from "@mantine/core";
+import { Button, Drawer, Group, Modal, Paper, Stack, alpha } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getAllMotdHistory } from "../../api/motd";
@@ -41,7 +41,15 @@ export default function HistoryPanel() {
       </Modal>
 
       <Stack className={styles.panelButton}>
-        <Button onClick={openHistory}>History</Button>
+        <Button
+          onClick={openHistory}
+          style={{
+            backgroundColor: alpha("#001033", 0.5),
+            backdropFilter: "blur(2px)",
+          }}
+        >
+          History
+        </Button>
       </Stack>
     </div>
   );

@@ -29,7 +29,7 @@ export default function HistoryPanel() {
             <Button onClick={openCreateNew}>Create New</Button>
           </Group>
           {query.data.map((motd) => (
-            <MotdDisplay key={motd._id} motd={motd} loadState="done" isEditable />
+            <MotdDisplay key={motd._id} motd={motd} loadState="done" isEditable size="small" />
           ))}
         </Stack>
       </Drawer>

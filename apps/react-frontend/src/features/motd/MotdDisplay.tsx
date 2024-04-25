@@ -1,4 +1,4 @@
-import { ActionIcon, Blockquote, Group, Modal, Stack, Text } from "@mantine/core";
+import { ActionIcon, Flex, Group, Modal, Paper, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MessageOfTheDay } from "@motd-ts/models";
 import { IconAdjustments, IconError404, IconLoader, IconQuote } from "@tabler/icons-react";
@@ -18,6 +18,9 @@ export interface MotdDisplayProps {
    */
   timeBeforeCiteUpdate?: number;
 
+  /** How big should the display be? */
+  size?: "large" | "small";
+
   /** How loaded is this display? */
   loadState: "done" | "loading" | "error";
 
@@ -30,9 +33,10 @@ export interface MotdDisplayProps {
 
 export function MotdDisplay(args: MotdDisplayProps) {
   // Unpack properties and apply defaults
-  const { motd, timeBeforeCiteUpdate, loadState, errorMessage, isEditable } = {
+  const { motd, timeBeforeCiteUpdate, loadState, errorMessage, isEditable, size } = {
     timeBeforeCiteUpdate: 60,
     isEditable: false,
+    size: "large",
     ...args,
   };
 
@@ -53,21 +57,11 @@ export function MotdDisplay(args: MotdDisplayProps) {
   // Use the message of the MOTD to populate the quote contents
   let quoteText: string = "";
   if (motd) {
-    quoteText = `"${motd.message}"`;
+    quoteText = `${motd.message}`;
   } else if (loadState === "loading") {
     quoteText = `...`;
   } else {
-    quoteText = errorMessage || "error";
-  }
-
-  // If we don't have a MOTD, make the icon look like it's loading
-  let icon: JSX.Element;
-  if (motd) {
-    icon = <IconQuote />;
-  } else if (loadState === "loading") {
-    icon = <IconLoader />;
-  } else {
-    icon = <IconError404 />;
+    quoteText = `Failed to load MOTD: ${errorMessage || "error"}`;
   }
 
   // Change the color of the quote depending on the loading state
@@ -85,16 +79,24 @@ export function MotdDisplay(args: MotdDisplayProps) {
 
   return (
     <div className={styles.motd}>
-      <Blockquote icon={icon} radius="xl" color={color}>
+      <Paper
+        radius={size === "large" ? "xl" : "lg"}
+        shadow="lg"
+        withBorder
+        style={{ padding: "40px" }}
+      >
         <Stack>
-          <Text size="xl" fw={700}>
-            {quoteText}
-          </Text>
+          <Flex align="center" gap="xl">
+            {loadState === "error" ? <IconError404 color={color} size={100} /> : undefined}
+            <Text size={size === "large" ? "50px" : "lg"} fw={700}>
+              {quoteText}
+            </Text>
+          </Flex>
           <Group justify="space-between">
             <Text size="s" c="dimmed" fs="italic">
               {createdAtText}
             </Text>
-            <Text size="xs" c="dimmed" fs="italic">
+            <Text size="s" c="dimmed" fs="italic">
               {editedAtText}
             </Text>
           </Group>
@@ -104,7 +106,7 @@ export function MotdDisplay(args: MotdDisplayProps) {
             </Text>
           ) : undefined}
         </Stack>
-      </Blockquote>
+      </Paper>
 
       {isEditable && loadState === "done" ? (
         <ActionIcon className={styles.editButton} onClick={openEditModal}>

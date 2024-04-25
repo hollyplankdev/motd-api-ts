@@ -1,4 +1,4 @@
-import { Center, Container, MantineProvider, Paper } from "@mantine/core";
+import { Center, Container, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { ModalsProvider } from "@mantine/modals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,14 +13,12 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
+      <MantineProvider theme={theme} defaultColorScheme="light">
         <ModalsProvider>
           <Container className="App" style={{ backgroundImage: `url(${background})` }}>
             <HistoryPanel />
             <Center h="100%">
-              <Paper shadow="m">
-                <LatestMotdDisplay />
-              </Paper>
+              <LatestMotdDisplay />
             </Center>
           </Container>
         </ModalsProvider>

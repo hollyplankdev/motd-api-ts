@@ -1,3 +1,4 @@
+import { LoadingOverlay, Stack, Transition } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { getLatestMotd } from "../../api/motd";
 import { MotdDisplay, MotdDisplayProps } from "./MotdDisplay";
@@ -16,6 +17,19 @@ export default function LatestMotdDisplay() {
   }
 
   return (
-    <MotdDisplay motd={query.data} loadState={loadState} errorMessage={query.error?.toString()} />
+    <>
+      <LoadingOverlay visible={loadState === "loading"} />
+      <Transition mounted={loadState !== "loading"} transition="fade-up" duration={500}>
+        {(styles) => (
+          <Stack maw={1000} style={{ margin: "50px", ...styles }}>
+            <MotdDisplay
+              motd={query.data}
+              loadState={loadState}
+              errorMessage={query.error?.toString()}
+            />
+          </Stack>
+        )}
+      </Transition>
+    </>
   );
 }

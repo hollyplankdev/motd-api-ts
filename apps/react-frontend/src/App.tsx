@@ -8,6 +8,7 @@ import background from "./background.jpg";
 import HistoryPanel from "./features/history/HistoryPanel";
 import LatestMotdDisplay from "./features/motd/LatestMotdDisplay";
 import theme from "./theme";
+import AccountPanel from "./features/account/AccountPanel";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function App() {
           <ModalsProvider>
             <Container className="App" style={{ backgroundImage: `url(${background})` }}>
               <HistoryPanel />
+              <AccountPanel />
               <Center h="100%">
                 <LatestMotdDisplay />
               </Center>

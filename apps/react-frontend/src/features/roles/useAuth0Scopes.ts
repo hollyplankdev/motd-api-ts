@@ -10,16 +10,12 @@ export default function useAuth0Roles() {
 
   useEffect(() => {
     const fetchRoles = async () => {
-      console.log("Fetching");
       const token = await getIdTokenClaims();
       if (!token || !(roleKey in token)) {
-        console.log("nothin");
         setRoles([]);
         return;
       }
 
-      console.log(`Found ${JSON.stringify(token)}`);
-      console.log(`Found ${token[roleKey]}`);
       setRoles(token[roleKey]);
     };
     fetchRoles();

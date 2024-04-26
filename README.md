@@ -1,5 +1,7 @@
 # Message of the Day API: TypeScript
 
+![The app frontend functioning, showing an example MOTD in the middle of the screen](docs/example.png)
+
 An example MOTD API written with TypeScript.
 
 # Features

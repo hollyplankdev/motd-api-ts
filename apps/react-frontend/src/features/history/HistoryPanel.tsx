@@ -1,10 +1,13 @@
-import { Button, Drawer, Group, Modal, Paper, Stack, alpha } from "@mantine/core";
+import { Button, Drawer, Group, Modal, Paper, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { getAllMotdHistory } from "../../api/motd";
+import { GlassButton } from "../glass/GlassButton";
 import { MotdDisplay } from "../motd/MotdDisplay";
 import { NewMotdForm } from "../motd/NewMotdForm";
 import styles from "./HistoryPanel.module.css";
+import useAuth0Roles from "../roles/useAuth0Scopes";
+import allRoles from "../roles/allRoles";
 
 export default function HistoryPanel() {
   const [isHistoryOpen, { open: openHistory, close: closeHistory }] = useDisclosure(false);
@@ -14,6 +17,7 @@ export default function HistoryPanel() {
     queryFn: getAllMotdHistory,
     initialData: [],
   });
+  const { roles } = useAuth0Roles();
 
   return (
     <div className={styles.container}>
@@ -41,15 +45,11 @@ export default function HistoryPanel() {
       </Modal>
 
       <Stack className={styles.panelButton}>
-        <Button
-          onClick={openHistory}
-          style={{
-            backgroundColor: alpha("#001033", 0.5),
-            backdropFilter: "blur(2px)",
-          }}
-        >
-          History
-        </Button>
+        {roles.includes(allRoles.motdWriter) && (
+          <GlassButton size="md" onClick={openHistory}>
+            History
+          </GlassButton>
+        )}
       </Stack>
     </div>
   );

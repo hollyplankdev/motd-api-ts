@@ -6,8 +6,7 @@ import { GlassButton } from "../glass/GlassButton";
 import { MotdDisplay } from "../motd/MotdDisplay";
 import { NewMotdForm } from "../motd/NewMotdForm";
 import styles from "./HistoryPanel.module.css";
-import useAuth0Roles from "../permissions/useAuth0Scopes";
-import namespacedClaim from "../permissions/namespacedClaim";
+import useAuth0Roles from "../roles/useAuth0Scopes";
 
 export default function HistoryPanel() {
   const [isHistoryOpen, { open: openHistory, close: closeHistory }] = useDisclosure(false);

@@ -9,14 +9,15 @@ import HistoryPanel from "./features/history/HistoryPanel";
 import LatestMotdDisplay from "./features/motd/LatestMotdDisplay";
 import theme from "./theme";
 import AccountPanel from "./features/account/AccountPanel";
+import { auth0ClientId, auth0Domain } from "../appConfig.json";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      domain={auth0Domain}
+      clientId={auth0ClientId}
       authorizationParams={{ redirect_uri: window.location.origin }}
     >
       <QueryClientProvider client={queryClient}>

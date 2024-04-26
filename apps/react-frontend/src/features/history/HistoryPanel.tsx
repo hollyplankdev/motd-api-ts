@@ -6,6 +6,8 @@ import { GlassButton } from "../glass/GlassButton";
 import { MotdDisplay } from "../motd/MotdDisplay";
 import { NewMotdForm } from "../motd/NewMotdForm";
 import styles from "./HistoryPanel.module.css";
+import useAuth0Roles from "../permissions/useAuth0Scopes";
+import namespacedClaim from "../permissions/namespacedClaim";
 
 export default function HistoryPanel() {
   const [isHistoryOpen, { open: openHistory, close: closeHistory }] = useDisclosure(false);
@@ -15,6 +17,7 @@ export default function HistoryPanel() {
     queryFn: getAllMotdHistory,
     initialData: [],
   });
+  const { roles } = useAuth0Roles();
 
   return (
     <div className={styles.container}>
@@ -42,9 +45,11 @@ export default function HistoryPanel() {
       </Modal>
 
       <Stack className={styles.panelButton}>
-        <GlassButton size="md" onClick={openHistory}>
-          History
-        </GlassButton>
+        {roles.includes("MOTD Writer") && (
+          <GlassButton size="md" onClick={openHistory}>
+            History
+          </GlassButton>
+        )}
       </Stack>
     </div>
   );

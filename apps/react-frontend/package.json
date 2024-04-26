@@ -10,6 +10,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@mantine/core": "^7.6.2",
     "@mantine/form": "^7.8.1",
     "@mantine/hooks": "^7.6.2",

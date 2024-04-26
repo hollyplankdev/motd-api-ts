@@ -1,4 +1,4 @@
-import { Avatar, Flex, Group, Paper, Text, UnstyledButton, alpha } from "@mantine/core";
+import { Avatar, Flex, Group, Text, UnstyledButton } from "@mantine/core";
 import { forwardRef } from "react";
 import { GlassPaper } from "../glass/GlassPaper";
 

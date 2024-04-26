@@ -1,3 +1,4 @@
+import { Auth0Provider } from "@auth0/auth0-react";
 import { Center, Container, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { ModalsProvider } from "@mantine/modals";
@@ -12,18 +13,23 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme} defaultColorScheme="light">
-        <ModalsProvider>
-          <Container className="App" style={{ backgroundImage: `url(${background})` }}>
-            <HistoryPanel />
-            <Center h="100%">
-              <LatestMotdDisplay />
-            </Center>
-          </Container>
-        </ModalsProvider>
-      </MantineProvider>
-    </QueryClientProvider>
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+    >
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider theme={theme} defaultColorScheme="light">
+          <ModalsProvider>
+            <Container className="App" style={{ backgroundImage: `url(${background})` }}>
+              <HistoryPanel />
+              <Center h="100%">
+                <LatestMotdDisplay />
+              </Center>
+            </Container>
+          </ModalsProvider>
+        </MantineProvider>
+      </QueryClientProvider>
+    </Auth0Provider>
   );
 }
 

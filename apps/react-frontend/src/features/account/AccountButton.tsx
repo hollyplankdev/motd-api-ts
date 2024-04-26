@@ -17,8 +17,10 @@ export const AccountButton = forwardRef<HTMLButtonElement, AccountButtonProps>(
     <UnstyledButton ref={ref} {...props}>
       <Group>
         <Flex direction="column" align="flex-end">
-          <Text size="sm">{displayName}</Text>
-          <Text size="xs" c="dimmed">
+          <Text size="md" fw={500}>
+            {displayName}
+          </Text>
+          <Text size="sm" fw={200}>
             {email}
           </Text>
         </Flex>

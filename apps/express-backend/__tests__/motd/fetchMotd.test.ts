@@ -64,16 +64,16 @@ describe("GET `/:motdId`", () => {
   //
 
   it("400 when invalid ID used", async () => {
-    const response = await testApp.api.getMotd("INVALIDID");
-    expect(response.statusCode).toEqual(400);
+    const response = await testApp.api.getMotd("INVALIDID").expect(400);
 
     const foundMotd: MessageOfTheDay = response.body;
     expect(foundMotd._id).toBeFalsy();
   });
 
   it("404 when non-existing ObjectId used", async () => {
-    const response = await testApp.api.getMotd(new mongoose.Types.ObjectId().toString());
-    expect(response.statusCode).toEqual(404);
+    const response = await testApp.api
+      .getMotd(new mongoose.Types.ObjectId().toString())
+      .expect(404);
 
     const foundMotd: MessageOfTheDay = response.body;
     expect(foundMotd._id).toBeFalsy();
@@ -81,8 +81,7 @@ describe("GET `/:motdId`", () => {
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    const response = await testApp.api.getMotd(motd?._id!);
-    expect(response.statusCode).toEqual(200);
+    const response = await testApp.api.getMotd(motd?._id!).expect(200);
 
     const transformedMotd = JSON.parse(JSON.stringify(motd)) as MessageOfTheDay;
     const foundMotd: MessageOfTheDay = response.body;

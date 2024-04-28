@@ -138,8 +138,7 @@ describe("GET `/history`", () => {
   //
 
   it("200 when no MOTDs", async () => {
-    const response = await testApp.api.listMotdHistory({});
-    expect(response.statusCode).toEqual(200);
+    const response = await testApp.api.listMotdHistory({}).expect(200);
     expect(response.body.lastId).toBeFalsy();
     expect(response.body.items).toHaveLength(0);
   });
@@ -153,8 +152,7 @@ describe("GET `/history`", () => {
         .map(async (phrase) => JSON.parse(JSON.stringify(await createMotd(phrase)))),
     );
 
-    const response = await testApp.api.listMotdHistory({});
-    expect(response.statusCode).toEqual(200);
+    const response = await testApp.api.listMotdHistory({}).expect(200);
     expect(response.body.lastId).toBeTruthy();
     expect(response.body.items.length).toBeGreaterThan(0);
     expect(allMotds).toEqual(expect.arrayContaining(response.body.items));
@@ -185,12 +183,10 @@ describe("GET `/history`", () => {
   });
 
   it("400 when malformed previousLastId used", async () => {
-    const response = await testApp.api.listMotdHistory({ previousLastId: "BADID" });
-    expect(response.statusCode).toEqual(400);
+    await testApp.api.listMotdHistory({ previousLastId: "BADID" }).expect(400);
   });
 
   it("400 when non-number used for pageSize", async () => {
-    const response = await testApp.api.listMotdHistory({ pageSize: "thisIsWrong" });
-    expect(response.statusCode).toEqual(400);
+    await testApp.api.listMotdHistory({ pageSize: "thisIsWrong" }).expect(400);
   });
 });

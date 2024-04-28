@@ -58,8 +58,7 @@ describe("GET `/`", () => {
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    const response = await testApp.api.getLatestMotd();
-    expect(response.statusCode).toEqual(200);
+    const response = await testApp.api.getLatestMotd().expect(200);
 
     const transformedMotd = JSON.parse(JSON.stringify(motd)) as MessageOfTheDay;
     const foundMotd: MessageOfTheDay = response.body;
@@ -70,7 +69,6 @@ describe("GET `/`", () => {
   });
 
   it("404 when no MOTDs", async () => {
-    const response = await testApp.api.getLatestMotd();
-    expect(response.statusCode).toEqual(404);
+    await testApp.api.getLatestMotd().expect(404);
   });
 });

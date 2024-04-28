@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
-import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createMotd, fetchMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
@@ -52,7 +51,7 @@ describe("POST `/`", () => {
 
   it("200 when given real data", async () => {
     const message = faker.hacker.phrase();
-    const response = await supertest(testApp.server).post("/").send({ message });
+    const response = await testApp.api.createMotd().send({ message });
     expect(response.statusCode).toEqual(200);
 
     const motd = response.body as MessageOfTheDay;
@@ -66,8 +65,20 @@ describe("POST `/`", () => {
     expect(foundMotd).toBeTruthy();
   });
 
+  it("401 when bad auth token", async () => {
+    const message = faker.hacker.phrase();
+
+    // With no token
+    let response = await testApp.api.createMotd({ token: undefined }).send({ message });
+    expect(response.statusCode).toEqual(401);
+
+    // With irrelevant token
+    response = await testApp.api.createMotd({ token: testApp.jwt.real() }).send({ message });
+    expect(response.statusCode).toEqual(401);
+  });
+
   it("415 when given no data", async () => {
-    const response = await supertest(testApp.server).post("/");
+    const response = await testApp.api.createMotd({ token: testApp.jwt.real() });
     expect(response.statusCode).toEqual(415);
 
     const motd = response.body as MessageOfTheDay;
@@ -75,7 +86,8 @@ describe("POST `/`", () => {
   });
 
   it("400 when given empty message", async () => {
-    const response = await supertest(testApp.server).post("/").send({ message: "" });
+    const message = "";
+    const response = await testApp.api.createMotd({ token: testApp.jwt.real() }).send({ message });
     expect(response.statusCode).toEqual(400);
 
     const motd = response.body as MessageOfTheDay;

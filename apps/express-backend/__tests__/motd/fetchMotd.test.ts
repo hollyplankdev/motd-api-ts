@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
 import mongoose from "mongoose";
-import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createMotd, fetchMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
@@ -65,7 +64,7 @@ describe("GET `/:motdId`", () => {
   //
 
   it("400 when invalid ID used", async () => {
-    const response = await supertest(testApp.server).get(`/BADIDTHINGY`);
+    const response = await testApp.api.getMotd("INVALIDID");
     expect(response.statusCode).toEqual(400);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -73,7 +72,7 @@ describe("GET `/:motdId`", () => {
   });
 
   it("404 when non-existing ObjectId used", async () => {
-    const response = await supertest(testApp.server).get(`/${new mongoose.Types.ObjectId()}`);
+    const response = await testApp.api.getMotd(new mongoose.Types.ObjectId().toString());
     expect(response.statusCode).toEqual(404);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -82,7 +81,7 @@ describe("GET `/:motdId`", () => {
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    const response = await supertest(testApp.server).get(`/${motd?._id}`);
+    const response = await testApp.api.getMotd(motd?._id!);
     expect(response.statusCode).toEqual(200);
 
     const transformedMotd = JSON.parse(JSON.stringify(motd)) as MessageOfTheDay;

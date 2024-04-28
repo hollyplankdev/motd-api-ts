@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
-import supertest from "supertest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createMotd, listMotds } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
@@ -139,7 +138,7 @@ describe("GET `/history`", () => {
   //
 
   it("200 when no MOTDs", async () => {
-    const response = await supertest(testApp.server).get("/history");
+    const response = await testApp.api.listMotdHistory({});
     expect(response.statusCode).toEqual(200);
     expect(response.body.lastId).toBeFalsy();
     expect(response.body.items).toHaveLength(0);
@@ -154,7 +153,7 @@ describe("GET `/history`", () => {
         .map(async (phrase) => JSON.parse(JSON.stringify(await createMotd(phrase)))),
     );
 
-    const response = await supertest(testApp.server).get("/history");
+    const response = await testApp.api.listMotdHistory({});
     expect(response.statusCode).toEqual(200);
     expect(response.body.lastId).toBeTruthy();
     expect(response.body.items.length).toBeGreaterThan(0);
@@ -174,11 +173,9 @@ describe("GET `/history`", () => {
     const motdsFoundFromListing: MessageOfTheDay[] = [];
     let lastId: string | undefined;
     do {
-      let request = supertest(testApp.server).get(`/history`);
-      if (lastId) request = request.query({ previousLastId: lastId });
-
       // eslint-disable-next-line no-await-in-loop
-      const response = await request;
+      const response = await testApp.api.listMotdHistory({ previousLastId: lastId });
+
       response.body.items.forEach((item) => motdsFoundFromListing.push(item));
       lastId = response.body.lastId;
     } while (lastId);
@@ -188,16 +185,12 @@ describe("GET `/history`", () => {
   });
 
   it("400 when malformed previousLastId used", async () => {
-    const response = await supertest(testApp.server)
-      .get("/history")
-      .query({ previousLastId: "BADID" });
+    const response = await testApp.api.listMotdHistory({ previousLastId: "BADID" });
     expect(response.statusCode).toEqual(400);
   });
 
   it("400 when non-number used for pageSize", async () => {
-    const response = await supertest(testApp.server)
-      .get("/history")
-      .query({ pageSize: "thisIsWrong" });
+    const response = await testApp.api.listMotdHistory({ pageSize: "thisIsWrong" });
     expect(response.statusCode).toEqual(400);
   });
 });

@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
 import mongoose from "mongoose";
-import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createMotd, fetchMotd, updateMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
@@ -89,7 +88,7 @@ describe("PATCH `/:motdId`", () => {
   //
 
   it("415 when invalid ID used and missing message", async () => {
-    const response = await supertest(testApp.server).patch(`/BADID`);
+    const response = await testApp.api.updateMotd("BADID");
     expect(response.statusCode).toEqual(415);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -97,7 +96,7 @@ describe("PATCH `/:motdId`", () => {
   });
 
   it("415 when non-existing ObjectId used and missing message", async () => {
-    const response = await supertest(testApp.server).patch(`/${new mongoose.Types.ObjectId()}`);
+    const response = await testApp.api.updateMotd(new mongoose.Types.ObjectId().toString());
     expect(response.statusCode).toEqual(415);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -105,9 +104,8 @@ describe("PATCH `/:motdId`", () => {
   });
 
   it("400 when invalid ID used", async () => {
-    const response = await supertest(testApp.server)
-      .patch(`/BADID`)
-      .send({ message: faker.hacker.phrase() });
+    const message = faker.hacker.phrase();
+    const response = await testApp.api.updateMotd("BADID").send({ message });
     expect(response.statusCode).toEqual(400);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -115,9 +113,10 @@ describe("PATCH `/:motdId`", () => {
   });
 
   it("404 when non-existing ObjectId used", async () => {
-    const response = await supertest(testApp.server)
-      .patch(`/${new mongoose.Types.ObjectId()}`)
-      .send({ message: faker.hacker.phrase() });
+    const message = faker.hacker.phrase();
+    const response = await testApp.api
+      .updateMotd(new mongoose.Types.ObjectId().toString())
+      .send({ message });
     expect(response.statusCode).toEqual(404);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -127,9 +126,7 @@ describe("PATCH `/:motdId`", () => {
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();
-    const response = await supertest(testApp.server)
-      .patch(`/${motd?._id}`)
-      .send({ message: newMessage });
+    const response = await testApp.api.updateMotd(motd?._id!).send({ message: newMessage });
     expect(response.statusCode).toEqual(200);
 
     const transformedMotd = response.body as MessageOfTheDay;

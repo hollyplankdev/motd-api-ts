@@ -3,11 +3,17 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import runApp from "../../src/app";
 import { API_SPEC_PATH } from "../../src/config/apiValidator.config";
+import TestApi from "./testApi";
+import TestJWT from "./testJWT";
 
 export default class TestApp {
   public server: http.Server;
 
   public mongod?: MongoMemoryServer;
+
+  public api: TestApi;
+
+  public jwt: TestJWT;
 
   public async setup() {
     // Create the in-memory test DB
@@ -19,6 +25,11 @@ export default class TestApp {
       apiSpecPath: API_SPEC_PATH,
     });
     this.server = startAppResults.httpServer;
+
+    this.api = new TestApi();
+    this.api.setup(this.server);
+
+    this.jwt = new TestJWT();
   }
 
   public async teardown() {

@@ -24,30 +24,30 @@ export default class TestApi {
   //
 
   public getLatestMotd(options?: RequestOptions) {
-    return this.request("GET", "/", options);
+    return this.request("get", "/", options);
   }
 
   public createMotd(options?: RequestOptions) {
-    return this.request("POST", "/", options);
+    return this.request("post", "/", options);
   }
 
   public getMotd(id: string, options?: RequestOptions) {
-    return this.request("GET", `/${id}`, options);
+    return this.request("get", `/${id}`, options);
   }
 
   public updateMotd(id: string, options?: RequestOptions) {
-    return this.request("PATCH", `/${id}`, options);
+    return this.request("patch", `/${id}`, options);
   }
 
   public deleteMotd(id: string, options?: RequestOptions) {
-    return this.request("DELETE", `/${id}`, options);
+    return this.request("delete", `/${id}`, options);
   }
 
   public listMotdHistory(
     params: { previousLastId?: string; pageSize?: string },
     options?: RequestOptions,
   ) {
-    return this.request("GET", "/history", options).query(params);
+    return this.request("get", "/history", options).query(params);
   }
 
   //
@@ -63,7 +63,7 @@ export default class TestApi {
    */
   private request(method: string, endpoint: string, options?: RequestOptions): Test {
     const req: Test = supertest(this.app)[method](endpoint);
-    if (options?.token) req.set("Authorization: Bearer", options.token);
+    if (options?.token) req.set("Authorization", `Bearer: ${options.token}`);
     return req;
   }
 }

@@ -65,16 +65,14 @@ describe("POST `/`", () => {
     expect(foundMotd).toBeTruthy();
   });
 
-  it("401 when bad auth token", async () => {
+  it("401 when no auth token", async () => {
     const message = faker.hacker.phrase();
+    await testApp.api.createMotd({ token: undefined }).send({ message }).expect(401);
+  });
 
-    // With no token
-    let response = await testApp.api.createMotd({ token: undefined }).send({ message });
-    expect(response.statusCode).toEqual(401);
-
-    // With irrelevant token
-    response = await testApp.api.createMotd({ token: testApp.jwt.fake() }).send({ message });
-    expect(response.statusCode).toEqual(401);
+  it("401 when fake auth token", async () => {
+    const message = faker.hacker.phrase();
+    await testApp.api.createMotd({ token: testApp.jwt.fake() }).send({ message }).expect(401);
   });
 
   it("415 when given no data", async () => {

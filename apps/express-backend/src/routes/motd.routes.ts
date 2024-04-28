@@ -1,13 +1,16 @@
 import { Router } from "express";
 import * as controller from "../controllers/motd.controllers.js";
+import checkJwt, { JwtMiddlewareConfig } from "../middleware/jwt.middleware.js";
 
-const indexRouter: Router = Router();
+export default function create(args: JwtMiddlewareConfig): Router {
+  const router = Router();
 
-indexRouter.get("/", controller.readLatest);
-indexRouter.post("/", controller.create);
-indexRouter.get("/history", controller.list);
-indexRouter.get("/:id", controller.read);
-indexRouter.patch("/:id", controller.update);
-indexRouter.delete("/:id", controller.remove);
+  router.get("/", controller.readLatest);
+  router.post("/", [checkJwt(args), controller.create]);
+  router.get("/history", controller.list);
+  router.get("/:id", controller.read);
+  router.patch("/:id", checkJwt(args), controller.update);
+  router.delete("/:id", checkJwt(args), controller.remove);
 
-export default indexRouter;
+  return router;
+}

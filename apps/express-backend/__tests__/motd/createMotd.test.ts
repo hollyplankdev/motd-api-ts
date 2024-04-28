@@ -52,7 +52,7 @@ describe("POST `/`", () => {
   it("200 when given real data", async () => {
     const message = faker.hacker.phrase();
     const response = await testApp.api
-      .createMotd({ token: testApp.jwt.fake() })
+      .createMotd({ token: testApp.jwt.real() })
       .send({ message })
       .expect(200);
 

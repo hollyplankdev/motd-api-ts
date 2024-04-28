@@ -5,6 +5,7 @@ import runApp from "../../src/app";
 import { API_SPEC_PATH } from "../../src/config/apiValidator.config";
 import TestApi from "./testApi";
 import TestJWT from "./testJWT";
+import { AUTH0_DOMAIN } from "../../src/config/auth0.config";
 
 export default class TestApp {
   public server: http.Server;
@@ -23,6 +24,7 @@ export default class TestApp {
     const startAppResults = await runApp({
       mongoDbUrl: this.mongod.getUri(),
       apiSpecPath: API_SPEC_PATH,
+      auth0Domain: AUTH0_DOMAIN,
     });
     this.server = startAppResults.httpServer;
 

@@ -51,7 +51,10 @@ describe("POST `/`", () => {
 
   it("200 when given real data", async () => {
     const message = faker.hacker.phrase();
-    const response = await testApp.api.createMotd().send({ message }).expect(200);
+    const response = await testApp.api
+      .createMotd({ token: testApp.jwt.fake() })
+      .send({ message })
+      .expect(200);
 
     const motd = response.body as MessageOfTheDay;
     expect(motd).toBeTruthy();

@@ -25,7 +25,7 @@ export default class TestJWT {
   }
 
   public real() {
-    throw new Error("TODO - implement JWT mocking");
-    return this.cachedFakeJWT;
+    // throw new Error("TODO - implement JWT mocking");
+    return this.fake();
   }
 }

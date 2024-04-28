@@ -63,7 +63,7 @@ export default class TestApi {
    */
   private request(method: string, endpoint: string, options?: RequestOptions): Test {
     const req: Test = supertest(this.app)[method](endpoint);
-    if (options?.token) req.set("Authorization", `Bearer: ${options.token}`);
+    if (options?.token) req.set("Authorization", `Bearer ${options.token}`);
     return req;
   }
 }

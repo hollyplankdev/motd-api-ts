@@ -32,9 +32,12 @@ export default class TestApp {
     this.api.setup(this.server);
 
     this.jwt = new TestJWT(AUTH0_DOMAIN);
+    this.jwt.setup();
   }
 
   public async teardown() {
+    this.jwt.teardown();
+
     // Stop the backend
     await new Promise<void>((resolve, reject) => {
       this.server.close((err) => {

@@ -1,20 +1,24 @@
 /** Thank you to https://carterbancroft.com/mocking-json-web-tokens-and-auth0/ for the reference! */
 import { faker } from "@faker-js/faker";
+import { JsonWebKey, createPublicKey, generateKeyPairSync } from "crypto";
 import jwt from "jsonwebtoken";
-import { generateKeyPairSync, createPublicKey, createPrivateKey, JsonWebKey } from "crypto";
+import nock from "nock";
 
 export default class TestJWT {
   /** The passphrase to use when generating RSA keys. */
   readonly rsaPassphrase = "testPassphrase";
 
-  /** The domain that auth0 is using, for this app. */
-  private auth0Domain: string;
+  /** The URL that auth0 is using, for this app. */
+  private auth0Url: string;
 
   /** The private key to use when fudging "real" JWTs. */
   private fudgedPrivateKey: string;
 
   /** The public key to use when fudging "real" JWTs. */
   private fudgedPublicKey: JsonWebKey;
+
+  /** The currently running instance of nock, used to fudge JWT requests. */
+  private nockInstance: nock.Interceptor;
 
   /** A fake JWT to re-use. */
   private cachedFakeJWT: string;
@@ -30,11 +34,20 @@ export default class TestJWT {
   //
 
   constructor(auth0Domain: string) {
-    this.auth0Domain = auth0Domain;
+    this.auth0Url = `https://${auth0Domain}`;
 
     const fudgedKeys = this.generateRSAKey();
     this.fudgedPrivateKey = fudgedKeys.privateKey;
     this.fudgedPublicKey = createPublicKey(fudgedKeys.publicKey).export({ format: "jwk" });
+  }
+
+  public setup() {
+    this.nockInstance = nock(this.auth0Url).persist(true).get("/.well-known/jwks.json");
+    this.nockInstance.reply(200, this.fudgeJWTResponse());
+  }
+
+  public teardown() {
+    nock.removeInterceptor(this.nockInstance);
   }
 
   //
@@ -69,7 +82,7 @@ export default class TestJWT {
             header: { kid: "0", alg: "RS256" },
             algorithm: "RS256",
             expiresIn: "1d",
-            issuer: `https://${this.auth0Domain}/`,
+            issuer: `${this.auth0Url}/`,
             audience,
           },
         ),
@@ -82,6 +95,21 @@ export default class TestJWT {
   //
   //  Private
   //
+
+  private fudgeJWTResponse() {
+    return {
+      keys: [
+        {
+          alg: "RS256",
+          kty: "RSA",
+          use: "sig",
+          n: this.fudgedPublicKey.n,
+          e: this.fudgedPublicKey.e,
+          kid: "0",
+        },
+      ],
+    };
+  }
 
   private generateRSAKey() {
     return generateKeyPairSync("rsa", {

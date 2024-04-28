@@ -8,7 +8,12 @@ import { App } from "supertest/types";
 
 type RequestOptions = { token?: string };
 
+/**
+ * A utility class that helps with calling the actual endpoints of our backend app, using supertest!
+ * Intended to be used with `TestApp`.
+ */
 export default class TestApi {
+  /** The backend application that we'll call endpoints on */
   private app: App;
 
   //

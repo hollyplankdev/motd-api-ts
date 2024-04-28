@@ -4,6 +4,10 @@ import { JsonWebKey, createPublicKey, generateKeyPairSync } from "crypto";
 import jwt from "jsonwebtoken";
 import nock from "nock";
 
+/**
+ * A utility class to help with generating fake JWTs at runtime, and fudging JWTs that the backend
+ * considers to be real while being tested.
+ */
 export default class TestJWT {
   /** The passphrase to use when generating RSA keys. */
   readonly rsaPassphrase = "testPassphrase";

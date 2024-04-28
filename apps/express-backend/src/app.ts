@@ -3,12 +3,11 @@ import express from "express";
 import * as http from "http";
 import { connect as mongooseConnect } from "mongoose";
 import { AddressInfo } from "net";
+import { JwtMiddlewareConfig } from "./middleware/jwt.middleware.js";
 import createOpenApiValidatorMiddleware, {
   OpenApiValidatorMiddlewareConfig,
 } from "./middleware/openApiValidator.middleware.js";
 import createTransmissionRouter from "./routes/motd.routes.js";
-import { JwtMiddlewareConfig } from "./middleware/jwt.middleware.js";
-import { el } from "@faker-js/faker";
 
 /** Arguments required for the application to run */
 export type RunAppArguments = {

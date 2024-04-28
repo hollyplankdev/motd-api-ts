@@ -89,7 +89,7 @@ describe("PATCH `/:motdId`", () => {
 
   it("415 when invalid ID used and missing message", async () => {
     const response = await testApp.api
-      .updateMotd("BADID", { token: testApp.jwt.real() })
+      .updateMotd("BADID", { token: testApp.jwt.real("/motd") })
       .expect(415);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -99,7 +99,7 @@ describe("PATCH `/:motdId`", () => {
   it("415 when non-existing ObjectId used and missing message", async () => {
     const response = await testApp.api
       .updateMotd(new mongoose.Types.ObjectId().toString(), {
-        token: testApp.jwt.real(),
+        token: testApp.jwt.real("/motd"),
       })
       .expect(415);
 
@@ -110,7 +110,7 @@ describe("PATCH `/:motdId`", () => {
   it("400 when invalid ID used", async () => {
     const message = faker.hacker.phrase();
     const response = await testApp.api
-      .updateMotd("BADID", { token: testApp.jwt.real() })
+      .updateMotd("BADID", { token: testApp.jwt.real("/motd") })
       .send({ message })
       .expect(400);
 
@@ -121,7 +121,7 @@ describe("PATCH `/:motdId`", () => {
   it("404 when non-existing ObjectId used", async () => {
     const message = faker.hacker.phrase();
     const response = await testApp.api
-      .updateMotd(new mongoose.Types.ObjectId().toString(), { token: testApp.jwt.real() })
+      .updateMotd(new mongoose.Types.ObjectId().toString(), { token: testApp.jwt.real("/motd") })
       .send({ message })
       .expect(404);
 
@@ -133,7 +133,7 @@ describe("PATCH `/:motdId`", () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();
     const response = await testApp.api
-      .updateMotd(motd?._id!, { token: testApp.jwt.real() })
+      .updateMotd(motd?._id!, { token: testApp.jwt.real("/motd") })
       .send({ message: newMessage })
       .expect(200);
 

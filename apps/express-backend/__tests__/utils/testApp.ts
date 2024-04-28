@@ -31,7 +31,7 @@ export default class TestApp {
     this.api = new TestApi();
     this.api.setup(this.server);
 
-    this.jwt = new TestJWT();
+    this.jwt = new TestJWT(AUTH0_DOMAIN);
   }
 
   public async teardown() {

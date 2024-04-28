@@ -52,7 +52,7 @@ describe("POST `/`", () => {
   it("200 when given real data", async () => {
     const message = faker.hacker.phrase();
     const response = await testApp.api
-      .createMotd({ token: testApp.jwt.real() })
+      .createMotd({ token: testApp.jwt.real("/motd") })
       .send({ message })
       .expect(200);
 
@@ -78,7 +78,7 @@ describe("POST `/`", () => {
   });
 
   it("415 when given no data", async () => {
-    const response = await testApp.api.createMotd({ token: testApp.jwt.real() }).expect(415);
+    const response = await testApp.api.createMotd({ token: testApp.jwt.real("/motd") }).expect(415);
 
     const motd = response.body as MessageOfTheDay;
     expect(motd._id).toBeFalsy();
@@ -87,7 +87,7 @@ describe("POST `/`", () => {
   it("400 when given empty message", async () => {
     const message = "";
     const response = await testApp.api
-      .createMotd({ token: testApp.jwt.real() })
+      .createMotd({ token: testApp.jwt.real("/motd") })
       .send({ message })
       .expect(400);
 

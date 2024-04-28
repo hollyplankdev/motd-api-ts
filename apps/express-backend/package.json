@@ -2,6 +2,7 @@
   "name": "@motd-ts/express-backend",
   "license": "BOBBO-NET Friendly MIT License",
   "private": "true",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "dev:up": "docker compose -f compose-local.yaml up -d --build --remove-orphans",

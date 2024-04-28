@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 /* eslint-disable import/no-extraneous-dependencies */
 import { defineConfig } from "vitest/config";
 

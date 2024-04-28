@@ -73,7 +73,7 @@ describe("POST `/`", () => {
     expect(response.statusCode).toEqual(401);
 
     // With irrelevant token
-    response = await testApp.api.createMotd({ token: testApp.jwt.real() }).send({ message });
+    response = await testApp.api.createMotd({ token: testApp.jwt.fake() }).send({ message });
     expect(response.statusCode).toEqual(401);
   });
 

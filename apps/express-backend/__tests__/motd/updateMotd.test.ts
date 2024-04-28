@@ -88,7 +88,7 @@ describe("PATCH `/:motdId`", () => {
   //
 
   it("415 when invalid ID used and missing message", async () => {
-    const response = await testApp.api.updateMotd("BADID");
+    const response = await testApp.api.updateMotd("BADID", { token: testApp.jwt.real() });
     expect(response.statusCode).toEqual(415);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -96,7 +96,9 @@ describe("PATCH `/:motdId`", () => {
   });
 
   it("415 when non-existing ObjectId used and missing message", async () => {
-    const response = await testApp.api.updateMotd(new mongoose.Types.ObjectId().toString());
+    const response = await testApp.api.updateMotd(new mongoose.Types.ObjectId().toString(), {
+      token: testApp.jwt.real(),
+    });
     expect(response.statusCode).toEqual(415);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -105,7 +107,9 @@ describe("PATCH `/:motdId`", () => {
 
   it("400 when invalid ID used", async () => {
     const message = faker.hacker.phrase();
-    const response = await testApp.api.updateMotd("BADID").send({ message });
+    const response = await testApp.api
+      .updateMotd("BADID", { token: testApp.jwt.real() })
+      .send({ message });
     expect(response.statusCode).toEqual(400);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -115,7 +119,7 @@ describe("PATCH `/:motdId`", () => {
   it("404 when non-existing ObjectId used", async () => {
     const message = faker.hacker.phrase();
     const response = await testApp.api
-      .updateMotd(new mongoose.Types.ObjectId().toString())
+      .updateMotd(new mongoose.Types.ObjectId().toString(), { token: testApp.jwt.real() })
       .send({ message });
     expect(response.statusCode).toEqual(404);
 
@@ -126,7 +130,9 @@ describe("PATCH `/:motdId`", () => {
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();
-    const response = await testApp.api.updateMotd(motd?._id!).send({ message: newMessage });
+    const response = await testApp.api
+      .updateMotd(motd?._id!, { token: testApp.jwt.real() })
+      .send({ message: newMessage });
     expect(response.statusCode).toEqual(200);
 
     const transformedMotd = response.body as MessageOfTheDay;

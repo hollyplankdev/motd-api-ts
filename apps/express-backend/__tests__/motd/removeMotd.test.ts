@@ -59,7 +59,7 @@ describe("DELETE `/:motdId`", () => {
   //
 
   it("400 when invalid ID used", async () => {
-    const response = await testApp.api.deleteMotd("BADID");
+    const response = await testApp.api.deleteMotd("BADID", { token: testApp.jwt.real() });
     expect(response.statusCode).toEqual(400);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -67,7 +67,9 @@ describe("DELETE `/:motdId`", () => {
   });
 
   it("404 when non-existing ObjectId used", async () => {
-    const response = await testApp.api.deleteMotd(new mongoose.Types.ObjectId().toString());
+    const response = await testApp.api.deleteMotd(new mongoose.Types.ObjectId().toString(), {
+      token: testApp.jwt.real(),
+    });
     expect(response.statusCode).toEqual(404);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -76,7 +78,7 @@ describe("DELETE `/:motdId`", () => {
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    const response = await testApp.api.deleteMotd(motd?._id!);
+    const response = await testApp.api.deleteMotd(motd?._id!, { token: testApp.jwt.real() });
     expect(response.statusCode).toEqual(200);
 
     const foundMotd = await fetchMotd(motd?._id);

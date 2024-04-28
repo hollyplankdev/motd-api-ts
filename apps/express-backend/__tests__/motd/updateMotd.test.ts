@@ -129,6 +129,24 @@ describe("PATCH `/:motdId`", () => {
     expect(foundMotd._id).toBeFalsy();
   });
 
+  it("401 when no auth token", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    const newMessage = faker.company.catchPhrase();
+    await testApp.api
+      .updateMotd(motd?._id!, { token: undefined })
+      .send({ message: newMessage })
+      .expect(401);
+  });
+
+  it("401 when fake auth token", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    const newMessage = faker.company.catchPhrase();
+    await testApp.api
+      .updateMotd(motd?._id!, { token: testApp.jwt.fake() })
+      .send({ message: newMessage })
+      .expect(401);
+  });
+
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();

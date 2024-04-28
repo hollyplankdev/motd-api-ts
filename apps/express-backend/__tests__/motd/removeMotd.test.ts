@@ -58,6 +58,16 @@ describe("DELETE `/:motdId`", () => {
   //  Tests
   //
 
+  it("401 when no auth token", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    await testApp.api.deleteMotd(motd?._id!, { token: undefined }).expect(401);
+  });
+
+  it("401 when fake auth token", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    await testApp.api.deleteMotd(motd?._id!, { token: testApp.jwt.fake() }).expect(401);
+  });
+
   it("400 when invalid ID used", async () => {
     const response = await testApp.api
       .deleteMotd("BADID", { token: testApp.jwt.real("/motd") })

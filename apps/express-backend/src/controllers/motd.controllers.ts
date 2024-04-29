@@ -7,6 +7,7 @@ import {
   removeMotd,
   updateMotd,
 } from "../services/motd.services";
+import hasPermissions from "../utils/hasPermissions";
 
 /**
  * Creates a new MOTD with a given message.
@@ -15,6 +16,12 @@ import {
  */
 export const create: RequestHandler = async (req, res) => {
   console.log(`Trying create MOTD...`);
+
+  // If we don't have permission, EXIT EARLY
+  if (!hasPermissions(req, ["motd:create"])) {
+    res.status(401).send();
+    return;
+  }
   const motd = await createMotd(req.body.message);
 
   // If the MOTD couldn't be created... EXIT EARLY!

@@ -50,8 +50,6 @@ async function runApp(
   // Handle any errors from express and wrap them as JSON
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use((err, req, res, next) => {
-    console.log(err);
-
     if (err.status) {
       // If we have a specific error status, just report that and wipe anything else to comply with
       // the API spec.

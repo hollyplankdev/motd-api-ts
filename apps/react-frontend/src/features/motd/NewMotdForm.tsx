@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { Button, Group, LoadingOverlay, Textarea } from "@mantine/core";
 import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -15,11 +16,13 @@ export interface NewMotdFormProps {
 
 export function NewMotdForm(args: NewMotdFormProps) {
   const { onComplete } = args;
+  const { getAccessTokenSilently } = useAuth0();
 
   // Create the mutation function that will allow us to update the MOTD
   const queryClient = useQueryClient();
   const createMotdMutation = useMutation({
-    mutationFn: (mutationArgs: { message: string }) => createMotd(mutationArgs),
+    mutationFn: (mutateArgs: { newMotd: { message: string }; token: string }) =>
+      createMotd(mutateArgs.newMotd, { accessToken: mutateArgs.token }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["motd", "history"] });
       queryClient.invalidateQueries({ queryKey: ["motd", "latest"] });
@@ -42,8 +45,9 @@ export function NewMotdForm(args: NewMotdFormProps) {
   const onFormSubmit = form.onSubmit(async () => {
     // Tell the API to update this message
     showLoadingSpinner();
+    const token = await getAccessTokenSilently();
     const { message } = form.getValues();
-    const response = await createMotdMutation.mutateAsync({ message });
+    const response = await createMotdMutation.mutateAsync({ newMotd: { message }, token });
     hideLoadingSpinner();
 
     // If there was an error, tell us about it!

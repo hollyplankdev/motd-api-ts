@@ -1,7 +1,14 @@
 import { MessageOfTheDay, inflateMessageOfTheDay } from "@motd-ts/models";
-import axios from "axios";
+import makeRequest from "../utils/makeRequest";
 
-const address: string = "http://localhost:30330";
+/** URL constructor functions. */
+const urls = {
+  base: () => "http://localhost:30330",
+  getLatest: () => `${urls.base()}/`,
+  getHistory: () => `${urls.base()}/history`,
+  update: (id: string) => `${urls.base()}/${id}`,
+  create: () => `${urls.base()}/`,
+};
 
 /**
  * Get the latest known MOTD from the API.
@@ -9,7 +16,8 @@ const address: string = "http://localhost:30330";
  * @returns The latest MOTD as an inflated object. undefined if there are no MOTDs.
  */
 export async function getLatestMotd(): Promise<MessageOfTheDay | undefined> {
-  const response = await axios.get(`${address}/`);
+  const response = await makeRequest("GET", urls.getLatest());
+
   if (response.status !== 200) return undefined;
   return inflateMessageOfTheDay(response.data);
 }
@@ -23,8 +31,9 @@ export async function getMotdHistory({
   pageSize?: number;
 }): Promise<{ lastId?: string; items: MessageOfTheDay[] } | undefined> {
   // Request MOTD history from the backend. If there's an error, EXIT EARLY
-  const queryParams = { previousLastId, pageSize };
-  const response = await axios.get(`${address}/history`, { params: queryParams });
+  const response = await makeRequest("GET", urls.getHistory(), {
+    queryParams: { previousLastId, pageSize },
+  });
   if (response.status !== 200) return undefined;
 
   // Format our result data
@@ -55,17 +64,31 @@ export async function getAllMotdHistory(): Promise<MessageOfTheDay[]> {
 export async function updateMotd(
   id: string,
   newProps: { message?: string },
+  config: {
+    accessToken: string;
+  },
 ): Promise<MessageOfTheDay | undefined> {
-  const response = await axios.patch(`${address}/${id}`, newProps);
+  const response = await makeRequest("PATCH", urls.update(id), {
+    data: newProps,
+    authToken: config.accessToken,
+  });
+
   if (response.status !== 200) return undefined;
   return inflateMessageOfTheDay(response.data);
 }
 
 /** Create a new MOTD in the API. */
-export async function createMotd(properties: {
-  message: string;
-}): Promise<MessageOfTheDay | undefined> {
-  const response = await axios.post(`${address}`, properties);
+export async function createMotd(
+  newMotd: { message: string },
+  config: {
+    accessToken: string;
+  },
+): Promise<MessageOfTheDay | undefined> {
+  const response = await makeRequest("POST", urls.create(), {
+    data: newMotd,
+    authToken: config.accessToken,
+  });
+
   if (response.status !== 200) return undefined;
   return inflateMessageOfTheDay(response.data);
 }

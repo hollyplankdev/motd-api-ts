@@ -7,6 +7,7 @@ import {
   removeMotd,
   updateMotd,
 } from "../services/motd.services";
+import hasPermissions from "../utils/hasPermissions";
 
 /**
  * Creates a new MOTD with a given message.
@@ -15,6 +16,12 @@ import {
  */
 export const create: RequestHandler = async (req, res) => {
   console.log(`Trying create MOTD...`);
+
+  // If we don't have permission, EXIT EARLY
+  if (!hasPermissions(req, ["motd:create"])) {
+    res.status(401).send();
+    return;
+  }
   const motd = await createMotd(req.body.message);
 
   // If the MOTD couldn't be created... EXIT EARLY!
@@ -69,6 +76,12 @@ export const read: RequestHandler = async (req, res) => {
  */
 export const update: RequestHandler = async (req, res) => {
   console.log(`Trying update MOTD w/ id ${req.params.id}...`);
+
+  // If we don't have permission, EXIT EARLY
+  if (!hasPermissions(req, ["motd:update"])) {
+    res.status(401).send();
+    return;
+  }
   const motd = await updateMotd(req.params.id, req.body.message);
 
   // If there's no MOTD... EXIT EARLY!
@@ -88,6 +101,12 @@ export const update: RequestHandler = async (req, res) => {
  */
 export const remove: RequestHandler = async (req, res) => {
   console.log(`Trying remove MOTD w/ id ${req.params.id}...`);
+
+  // If we don't have permission, EXIT EARLY
+  if (!hasPermissions(req, ["motd:delete"])) {
+    res.status(401).send();
+    return;
+  }
   const result = await removeMotd(req.params.id);
 
   // If there's no MOTD... EXIT EARLY!

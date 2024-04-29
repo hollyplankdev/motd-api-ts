@@ -3,20 +3,23 @@ import express from "express";
 import * as http from "http";
 import { connect as mongooseConnect } from "mongoose";
 import { AddressInfo } from "net";
-import createOpenApiValidatorMiddleware from "./middleware/openApiValidator.middleware.js";
-import transmissionRouter from "./routes/motd.routes.js";
+import { JwtMiddlewareConfig } from "./middleware/jwt.middleware.js";
+import createOpenApiValidatorMiddleware, {
+  OpenApiValidatorMiddlewareConfig,
+} from "./middleware/openApiValidator.middleware.js";
+import createTransmissionRouter from "./routes/motd.routes.js";
 
 /** Arguments required for the application to run */
-export interface RunAppArguments {
+export type RunAppArguments = {
   /** The port to use for the HTTP server backing this app. */
   httpPort?: number;
 
   /** The URL to use when connecting to the database. */
   mongoDbUrl: string;
 
-  /** Where on disk to find the OpenAPI spec. */
-  apiSpecPath: string;
-}
+  /** The domain that auth0 is using, for this app. */
+  auth0Domain: JwtMiddlewareConfig["auth0Domain"];
+} & OpenApiValidatorMiddlewareConfig;
 
 /** Constructs and begins running the application. */
 async function runApp(
@@ -36,22 +39,28 @@ async function runApp(
 
   app.use(cors());
   app.use(express.json());
-  app.use(createOpenApiValidatorMiddleware(args.apiSpecPath));
+  app.use(createOpenApiValidatorMiddleware(args));
 
   //
   //  Routes
   //
 
-  app.use(transmissionRouter);
+  app.use(createTransmissionRouter({ audience: "/motd", auth0Domain: args.auth0Domain }));
 
   // Handle any errors from express and wrap them as JSON
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use((err, req, res, next) => {
-    // Report a catch-all for any errors.
-    res.status(err.status || 500).json({
-      message: err.message,
-      errors: err.errors,
-    });
+    if (err.status) {
+      // If we have a specific error status, just report that and wipe anything else to comply with
+      // the API spec.
+      res.status(err.status).send();
+    } else {
+      // Report a catch-all for any errors.
+      res.status(500).json({
+        message: err.message,
+        errors: err.errors,
+      });
+    }
   });
 
   //

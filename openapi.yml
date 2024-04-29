@@ -28,6 +28,8 @@ paths:
     post:
       summary: Create new MOTD
       description: Creates a new MOTD and returns information about it.
+      security:
+        - jwt: ["motd:create"]
       requestBody:
         description: Data for the new MOTD.
         required: true
@@ -47,10 +49,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MOTD"
-        "415":
-          description: Incorrect Content-Type.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
         "400":
           description: Invalid arguments. Message must not be empty.
+        "415":
+          description: Incorrect Content-Type.
   /{id}:
     get:
       summary: Get specific MOTD
@@ -78,6 +82,8 @@ paths:
     patch:
       summary: Update specific MOTD
       description: Updates the message field of a specific message of the day.
+      security:
+        - jwt: ["motd:update"]
       parameters:
         - in: path
           name: id
@@ -106,6 +112,8 @@ paths:
                 $ref: "#/components/schemas/MOTD"
         "400":
           description: Malformatted ID provided.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
         "404":
           description: No MOTD by that ID found.
         "415":
@@ -113,6 +121,8 @@ paths:
     delete:
       summary: Remove specific MOTD
       description: Removes a specific message of the day.
+      security:
+        - jwt: ["motd:delete"]
       parameters:
         - in: path
           name: id
@@ -127,6 +137,8 @@ paths:
           description: The MOTD with the matching ID was removed.
         "400":
           description: Malformatted ID provided.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
         "404":
           description: No MOTD by that ID found.
   /history:
@@ -171,6 +183,14 @@ paths:
           description: Malformed `previousLastId` or `pageSize`.
 
 components:
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid.
   schemas:
     MOTD:
       description: An object representing some message of the day.

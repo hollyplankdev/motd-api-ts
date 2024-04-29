@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
-import supertest from "supertest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createMotd, fetchLatestMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
@@ -47,7 +46,7 @@ describe("GET `/`", () => {
   let testApp: TestApp;
   beforeEach(async () => {
     testApp = new TestApp();
-    await testApp.setup();
+    await testApp.setup({ defaultAudience: "/motd" });
   });
   afterEach(async () => {
     await testApp.teardown();
@@ -59,8 +58,7 @@ describe("GET `/`", () => {
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    const response = await supertest(testApp.server).get("/");
-    expect(response.statusCode).toEqual(200);
+    const response = await testApp.api.getLatestMotd().expect(200);
 
     const transformedMotd = JSON.parse(JSON.stringify(motd)) as MessageOfTheDay;
     const foundMotd: MessageOfTheDay = response.body;
@@ -71,7 +69,6 @@ describe("GET `/`", () => {
   });
 
   it("404 when no MOTDs", async () => {
-    const response = await supertest(testApp.server).get("/");
-    expect(response.statusCode).toEqual(404);
+    await testApp.api.getLatestMotd().expect(404);
   });
 });

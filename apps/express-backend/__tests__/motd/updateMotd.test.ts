@@ -142,6 +142,13 @@ describe("PATCH `/:motdId`", () => {
     await testApp.api.updateMotd(motd?._id!, { token }).send({ message: newMessage }).expect(401);
   });
 
+  it("401 when missing permission", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    const newMessage = faker.company.catchPhrase();
+    const token = await testApp.jwt({ is: "valid", permissions: ["someOther:permission"] });
+    await testApp.api.updateMotd(motd?._id!, { token }).send({ message: newMessage }).expect(401);
+  });
+
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();

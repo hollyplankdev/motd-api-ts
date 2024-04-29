@@ -70,6 +70,12 @@ describe("DELETE `/:motdId`", () => {
     await testApp.api.deleteMotd(motd?._id!, { token }).expect(401);
   });
 
+  it("401 when missing permission", async () => {
+    const motd = await createMotd(faker.hacker.phrase());
+    const token = await testApp.jwt({ is: "valid", permissions: ["youDontHave:permission"] });
+    await testApp.api.deleteMotd(motd?._id!, { token }).expect(401);
+  });
+
   it("400 when invalid ID used", async () => {
     const token = testApp.jwt({ is: "valid", permissions: ["motd:delete"] });
     const response = await testApp.api.deleteMotd("BADID", { token }).expect(400);

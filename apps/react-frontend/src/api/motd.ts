@@ -6,7 +6,7 @@ const urls = {
   base: () => "http://localhost:30330",
   getLatest: () => `${urls.base()}/`,
   getHistory: () => `${urls.base()}/history`,
-  update: (id: string) => `${urls.base}/${id}`,
+  update: (id: string) => `${urls.base()}/${id}`,
   create: () => `${urls.base()}/`,
 };
 

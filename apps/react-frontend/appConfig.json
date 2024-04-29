@@ -1,4 +1,5 @@
 {
   "auth0Domain": "dev-wduhl326w2kbi0k3.us.auth0.com",
-  "auth0ClientId": "VI6xgABOsveiZcnTOsiRUtgVMcLcYXCh"
+  "auth0ClientId": "VI6xgABOsveiZcnTOsiRUtgVMcLcYXCh",
+  "auth0Audience": "/motd"
 }

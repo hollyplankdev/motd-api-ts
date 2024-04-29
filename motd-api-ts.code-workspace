@@ -23,5 +23,11 @@
       "**/*.less",
       "**/node_modules/@mantine/core/styles.css",
     ],
+    "[typescript]": {
+      "editor.rulers": [100],
+    },
+    "[typescriptreact]": {
+      "editor.rulers": [100],
+    },
   },
 }

@@ -48,7 +48,7 @@ describe("DELETE `/:motdId`", () => {
   let testApp: TestApp;
   beforeAll(async () => {
     testApp = new TestApp();
-    await testApp.setup();
+    await testApp.setup({ defaultAudience: "/motd" });
   });
   afterAll(async () => {
     await testApp.teardown();
@@ -58,30 +58,30 @@ describe("DELETE `/:motdId`", () => {
   //  Tests
   //
 
-  it("401 when no auth token", async () => {
+  it("401 when unsigned auth token", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    await testApp.api.deleteMotd(motd?._id!, { token: undefined }).expect(401);
+    const token = await testApp.jwt({ is: "unsigned", permissions: ["motd:delete"] });
+    await testApp.api.deleteMotd(motd?._id!, { token }).expect(401);
   });
 
-  it("401 when fake auth token", async () => {
+  it("401 when badly signed auth token", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    await testApp.api.deleteMotd(motd?._id!, { token: testApp.jwt.fake() }).expect(401);
+    const token = await testApp.jwt({ is: "badlySigned", permissions: ["motd:delete"] });
+    await testApp.api.deleteMotd(motd?._id!, { token }).expect(401);
   });
 
   it("400 when invalid ID used", async () => {
-    const response = await testApp.api
-      .deleteMotd("BADID", { token: testApp.jwt.real("/motd") })
-      .expect(400);
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:delete"] });
+    const response = await testApp.api.deleteMotd("BADID", { token }).expect(400);
 
     const foundMotd: MessageOfTheDay = response.body;
     expect(foundMotd._id).toBeFalsy();
   });
 
   it("404 when non-existing ObjectId used", async () => {
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:delete"] });
     const response = await testApp.api
-      .deleteMotd(new mongoose.Types.ObjectId().toString(), {
-        token: testApp.jwt.real("/motd"),
-      })
+      .deleteMotd(new mongoose.Types.ObjectId().toString(), { token })
       .expect(404);
 
     const foundMotd: MessageOfTheDay = response.body;
@@ -90,7 +90,8 @@ describe("DELETE `/:motdId`", () => {
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
-    await testApp.api.deleteMotd(motd?._id!, { token: testApp.jwt.real("/motd") }).expect(200);
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:delete"] });
+    await testApp.api.deleteMotd(motd?._id!, { token }).expect(200);
 
     const foundMotd = await fetchMotd(motd?._id);
     expect(foundMotd).toBeFalsy();

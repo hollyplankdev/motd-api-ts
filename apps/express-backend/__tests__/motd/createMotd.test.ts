@@ -39,7 +39,7 @@ describe("POST `/`", () => {
   let testApp: TestApp;
   beforeAll(async () => {
     testApp = new TestApp();
-    await testApp.setup();
+    await testApp.setup({ defaultAudience: "/motd" });
   });
   afterAll(async () => {
     await testApp.teardown();
@@ -51,10 +51,8 @@ describe("POST `/`", () => {
 
   it("200 when given real data", async () => {
     const message = faker.hacker.phrase();
-    const response = await testApp.api
-      .createMotd({ token: testApp.jwt.real("/motd") })
-      .send({ message })
-      .expect(200);
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
+    const response = await testApp.api.createMotd({ token }).send({ message }).expect(200);
 
     const motd = response.body as MessageOfTheDay;
     expect(motd).toBeTruthy();
@@ -69,29 +67,37 @@ describe("POST `/`", () => {
 
   it("401 when no auth token", async () => {
     const message = faker.hacker.phrase();
-    await testApp.api.createMotd({ token: undefined }).send({ message }).expect(401);
+    const token = undefined;
+    await testApp.api.createMotd({ token }).send({ message }).expect(401);
   });
 
-  it("401 when fake auth token", async () => {
+  it("401 when unsigned auth token", async () => {
     const message = faker.hacker.phrase();
-    await testApp.api.createMotd({ token: testApp.jwt.fake() }).send({ message }).expect(401);
+    const token = testApp.jwt({ is: "unsigned", permissions: ["motd:create"] });
+    await testApp.api.createMotd({ token }).send({ message }).expect(401);
+  });
+
+  it("401 when badly signed auth token", async () => {
+    const message = faker.hacker.phrase();
+    const token = testApp.jwt({ is: "badlySigned", permissions: ["motd:create"] });
+    await testApp.api.createMotd({ token }).send({ message }).expect(401);
+  });
+
+  it("401 when missing permissions", async () => {
+    const message = faker.hacker.phrase();
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:somethingElse"] });
+    await testApp.api.createMotd({ token }).send({ message }).expect(401);
   });
 
   it("415 when given no data", async () => {
-    const response = await testApp.api.createMotd({ token: testApp.jwt.real("/motd") }).expect(415);
-
-    const motd = response.body as MessageOfTheDay;
-    expect(motd._id).toBeFalsy();
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
+    await testApp.api.createMotd({ token }).expect(415);
   });
 
   it("400 when given empty message", async () => {
     const message = "";
-    const response = await testApp.api
-      .createMotd({ token: testApp.jwt.real("/motd") })
-      .send({ message })
-      .expect(400);
-
-    const motd = response.body as MessageOfTheDay;
-    expect(motd._id).toBeFalsy();
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
+    const response = await testApp.api.createMotd({ token }).send({ message }).expect(400);
+    expect((response.body as MessageOfTheDay)._id).toBeFalsy();
   });
 });

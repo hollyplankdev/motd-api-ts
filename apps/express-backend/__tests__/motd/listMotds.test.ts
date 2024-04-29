@@ -127,7 +127,7 @@ describe("GET `/history`", () => {
   let testApp: TestApp;
   beforeEach(async () => {
     testApp = new TestApp();
-    await testApp.setup();
+    await testApp.setup({ defaultAudience: "/motd" });
   });
   afterEach(async () => {
     await testApp.teardown();

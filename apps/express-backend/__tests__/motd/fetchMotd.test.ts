@@ -53,7 +53,7 @@ describe("GET `/:motdId`", () => {
   let testApp: TestApp;
   beforeAll(async () => {
     testApp = new TestApp();
-    await testApp.setup();
+    await testApp.setup({ defaultAudience: "/motd" });
   });
   afterAll(async () => {
     await testApp.teardown();

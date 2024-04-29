@@ -77,7 +77,7 @@ describe("PATCH `/:motdId`", () => {
   let testApp: TestApp;
   beforeAll(async () => {
     testApp = new TestApp();
-    await testApp.setup();
+    await testApp.setup({ defaultAudience: "/motd" });
   });
   afterAll(async () => {
     await testApp.teardown();
@@ -88,18 +88,18 @@ describe("PATCH `/:motdId`", () => {
   //
 
   it("415 when invalid ID used and missing message", async () => {
-    const response = await testApp.api
-      .updateMotd("BADID", { token: testApp.jwt.real("/motd") })
-      .expect(415);
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:update"] });
+    const response = await testApp.api.updateMotd("BADID", { token }).expect(415);
 
     const foundMotd: MessageOfTheDay = response.body;
     expect(foundMotd._id).toBeFalsy();
   });
 
   it("415 when non-existing ObjectId used and missing message", async () => {
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:update"] });
     const response = await testApp.api
       .updateMotd(new mongoose.Types.ObjectId().toString(), {
-        token: testApp.jwt.real("/motd"),
+        token,
       })
       .expect(415);
 
@@ -109,10 +109,8 @@ describe("PATCH `/:motdId`", () => {
 
   it("400 when invalid ID used", async () => {
     const message = faker.hacker.phrase();
-    const response = await testApp.api
-      .updateMotd("BADID", { token: testApp.jwt.real("/motd") })
-      .send({ message })
-      .expect(400);
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:update"] });
+    const response = await testApp.api.updateMotd("BADID", { token }).send({ message }).expect(400);
 
     const foundMotd: MessageOfTheDay = response.body;
     expect(foundMotd._id).toBeFalsy();
@@ -120,8 +118,9 @@ describe("PATCH `/:motdId`", () => {
 
   it("404 when non-existing ObjectId used", async () => {
     const message = faker.hacker.phrase();
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:update"] });
     const response = await testApp.api
-      .updateMotd(new mongoose.Types.ObjectId().toString(), { token: testApp.jwt.real("/motd") })
+      .updateMotd(new mongoose.Types.ObjectId().toString(), { token })
       .send({ message })
       .expect(404);
 
@@ -129,29 +128,26 @@ describe("PATCH `/:motdId`", () => {
     expect(foundMotd._id).toBeFalsy();
   });
 
-  it("401 when no auth token", async () => {
+  it("401 when unsigned token", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();
-    await testApp.api
-      .updateMotd(motd?._id!, { token: undefined })
-      .send({ message: newMessage })
-      .expect(401);
+    const token = await testApp.jwt({ is: "unsigned", permissions: ["motd:update"] });
+    await testApp.api.updateMotd(motd?._id!, { token }).send({ message: newMessage }).expect(401);
   });
 
-  it("401 when fake auth token", async () => {
+  it("401 when badly signed token", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();
-    await testApp.api
-      .updateMotd(motd?._id!, { token: testApp.jwt.fake() })
-      .send({ message: newMessage })
-      .expect(401);
+    const token = await testApp.jwt({ is: "badlySigned", permissions: ["motd:update"] });
+    await testApp.api.updateMotd(motd?._id!, { token }).send({ message: newMessage }).expect(401);
   });
 
   it("200 when MOTD exists", async () => {
     const motd = await createMotd(faker.hacker.phrase());
     const newMessage = faker.company.catchPhrase();
+    const token = testApp.jwt({ is: "valid", permissions: ["motd:update"] });
     const response = await testApp.api
-      .updateMotd(motd?._id!, { token: testApp.jwt.real("/motd") })
+      .updateMotd(motd?._id!, { token })
       .send({ message: newMessage })
       .expect(200);
 

@@ -3,7 +3,7 @@ import makeRequest from "../utils/makeRequest";
 
 /** URL constructor functions. */
 const urls = {
-  base: () => "http://localhost:30330",
+  base: () => "motd",
   getLatest: () => `${urls.base()}/`,
   getHistory: () => `${urls.base()}/history`,
   update: (id: string) => `${urls.base()}/${id}`,

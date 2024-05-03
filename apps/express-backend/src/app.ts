@@ -8,6 +8,7 @@ import createOpenApiValidatorMiddleware, {
   OpenApiValidatorMiddlewareConfig,
 } from "./middleware/openApiValidator.middleware.js";
 import createTransmissionRouter from "./routes/motd.routes.js";
+import { populateDefaultMotds } from "./services/motd.services.js";
 
 /** Arguments required for the application to run */
 export type RunAppArguments = {
@@ -19,6 +20,9 @@ export type RunAppArguments = {
 
   /** The domain that auth0 is using, for this app. */
   auth0Domain: JwtMiddlewareConfig["auth0Domain"];
+
+  /** Should we populate the database with default values? */
+  populateDb?: boolean;
 } & OpenApiValidatorMiddlewareConfig;
 
 /** Constructs and begins running the application. */
@@ -70,6 +74,11 @@ async function runApp(
   // Connect to the database
   const dbConnection = await mongooseConnect(args.mongoDbUrl);
   console.log(`DB connected on port ${dbConnection.connection.port}...`);
+
+  // If we should populate the database with default values... do so!
+  if (args.populateDb) {
+    await populateDefaultMotds();
+  }
 
   // Start listening on the HTTP server. If there's an error, REJECT!
   // (we promisify this so that in the future we can easily wait for

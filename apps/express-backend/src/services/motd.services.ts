@@ -32,6 +32,19 @@ export async function fetchLatestMotd(): Promise<MessageOfTheDay | null> {
   return motd.toObject({ versionKey: false, flattenObjectIds: true });
 }
 
+/** Populates the database with a default MOTD if there are no MOTDs present in the database. */
+export async function populateDefaultMotds(): Promise<void> {
+  // If there is at LEAST one MOTD, we don't need to populate. EXIT EARLY!
+  const motd = await fetchLatestMotd();
+  if (motd) return;
+
+  // OTHERWISE - populate the database with a default MOTD!
+  await createMotd(
+    "I know my apprehensions might never be allayed, and so I close, " +
+      "realizing that perhaps the ending has not yet been written.",
+  );
+}
+
 /**
  * Get an existing MOTD.
  *

@@ -10,4 +10,5 @@ runApp({
   mongoDbUrl: MONGODB_URL,
   apiSpecPath: API_SPEC_PATH,
   auth0Domain: AUTH0_DOMAIN,
+  populateDb: true,
 });

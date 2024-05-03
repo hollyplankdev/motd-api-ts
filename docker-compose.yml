@@ -1,2 +1,5 @@
+# In order for Elastic Beanstalk to work, we need a docker-compose
+# in the root directory. This just forwards it to the one in the
+# eb/ directory.
 include:
   - eb/docker-compose.yml

@@ -1,0 +1,2 @@
+include:
+  - eb/docker-compose.yml

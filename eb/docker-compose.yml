@@ -1,0 +1,21 @@
+services:
+  # The image we'll use to route our services under JUST the 80 port.
+  # Thank you to https://umasrinivask.medium.com/configure-nginx-as-a-reverse-proxy-with-docker-compose-file-4ebba2b75c89
+  # for help with configuring this!
+  reverse-proxy:
+    image: nginx:stable
+    depends_on:
+      - frontend
+    ports: 
+      - 80:80
+    # Tell NGINX where the config we wanna use is. This determines how reverse proxying works.
+    volumes:
+      - ./nginx.reverse-proxy.conf:/etc/nginx/nginx.conf
+
+  # Expose the frontend as a simple HTTP server.
+  frontend:
+    image: nginx:stable
+    # Connect our built frontend distribution to where NGINX is expecting to serve HTML from.
+    volumes:
+      - ../apps/react-frontend/dist:/usr/share/nginx/html
+

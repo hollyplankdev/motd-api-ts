@@ -39,12 +39,12 @@ services:
       NODE_ENV: production
       MONGODB_URL: mongodb://database:27017
 
-  # TODO - remove me
+  # The in-docker database. For a portfolio project, I think having something non-persistent is fine.
   database:
     image: mongo:6-jammy
+    # Store the DB contents in a specific volume
     volumes:
-      - dbdata6:/data/db
+      - database-cache:/data/db
 
-# TODO - remove me
 volumes:
-  dbdata6:
+  database-cache:

@@ -68,8 +68,9 @@ async function runApp(
   //
 
   // Connect to the database
-  const dbConnection = await mongooseConnect(args.mongoDbUrl);
-  console.log(`DB connected on port ${dbConnection.connection.port}...`);
+  console.log(`Connecting to DB at ${args.mongoDbUrl} ...`);
+  await mongooseConnect(args.mongoDbUrl);
+  console.log(`...DB connected!`);
 
   // Start listening on the HTTP server. If there's an error, REJECT!
   // (we promisify this so that in the future we can easily wait for

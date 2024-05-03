@@ -1,3 +1,4 @@
+version: "3"
 services:
   # The image we'll use to route our services under JUST the 80 port.
   # Thank you to https://umasrinivask.medium.com/configure-nginx-as-a-reverse-proxy-with-docker-compose-file-4ebba2b75c89
@@ -6,7 +7,8 @@ services:
     image: nginx:stable
     depends_on:
       - frontend
-    ports: 
+      - backend
+    ports:
       - 80:80
     # Tell NGINX where the config we wanna use is. This determines how reverse proxying works.
     volumes:
@@ -14,8 +16,35 @@ services:
 
   # Expose the frontend as a simple HTTP server.
   frontend:
-    image: nginx:stable
-    # Connect our built frontend distribution to where NGINX is expecting to serve HTML from.
-    volumes:
-      - ../apps/react-frontend/dist:/usr/share/nginx/html
+    image: motd-api-ts/frontend
+    build:
+      context: ../
+      dockerfile: eb/pnpm.Dockerfile
+      target: react-frontend
+    pull_policy: never # Make sure we don't try to pull this image from the net
+    depends_on:
+      - backend
 
+  # The backend express API.
+  backend:
+    image: motd-api-ts/backend
+    build:
+      context: ../
+      dockerfile: eb/pnpm.Dockerfile
+      target: express-backend
+    pull_policy: never # Make sure we don't try to pull this image from the net
+    depends_on:
+      - database
+    environment:
+      NODE_ENV: production
+      MONGODB_URL: mongodb://database:27017
+
+  # TODO - remove me
+  database:
+    image: mongo:6-jammy
+    volumes:
+      - dbdata6:/data/db
+
+# TODO - remove me
+volumes:
+  dbdata6:

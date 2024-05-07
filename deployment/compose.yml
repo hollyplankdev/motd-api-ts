@@ -18,7 +18,7 @@ services:
     image: motd-api-ts/frontend
     build:
       context: ../
-      dockerfile: eb/pnpm.Dockerfile
+      dockerfile: deployment/pnpm.Dockerfile
       target: react-frontend
     pull_policy: never # Make sure we don't try to pull this image from the net
     depends_on:
@@ -29,7 +29,7 @@ services:
     image: motd-api-ts/backend
     build:
       context: ../
-      dockerfile: eb/pnpm.Dockerfile
+      dockerfile: deployment/pnpm.Dockerfile
       target: express-backend
     pull_policy: never # Make sure we don't try to pull this image from the net
     depends_on:

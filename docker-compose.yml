@@ -1,0 +1,3 @@
+# Simply forwards to the compose file in the docker/ directory
+include:
+  - docker/compose.yml

@@ -16,5 +16,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/motd/, ""),
       },
     },
+    port: 4000,
   },
 });

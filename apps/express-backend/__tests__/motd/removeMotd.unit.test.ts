@@ -1,6 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { MessageOfTheDay } from "@motd-ts/models";
-import mongoose from "mongoose";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createMotd, fetchMotd, removeMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";

@@ -41,12 +41,11 @@ describe("GET `/:motdId`", () => {
     const motd = createResponse.body as MessageOfTheDay;
 
     const getResponse = await testApp.api.getMotd(motd?._id!).expect(200);
+    const foundMotd: MessageOfTheDay = getResponse.body as MessageOfTheDay;
 
-    const transformedMotd = JSON.parse(JSON.stringify(motd)) as MessageOfTheDay;
-    const foundMotd: MessageOfTheDay = getResponse.body;
-    expect(transformedMotd._id).toEqual(foundMotd._id);
-    expect(transformedMotd.message).toEqual(foundMotd.message);
-    expect(transformedMotd.createdAt).toEqual(foundMotd.createdAt);
-    expect(transformedMotd.updatedAt).toEqual(foundMotd.updatedAt);
+    expect(motd._id).toEqual(foundMotd._id);
+    expect(motd.message).toEqual(foundMotd.message);
+    expect(motd.createdAt).toEqual(foundMotd.createdAt);
+    expect(motd.updatedAt).toEqual(foundMotd.updatedAt);
   });
 });

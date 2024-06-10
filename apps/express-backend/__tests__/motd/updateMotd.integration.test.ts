@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import TestApp from "../utils/testApp";
 
-describe("PATCH `/:motdId`", () => {
+describe("Update MOTD via PATCH `/:motdId`", () => {
   let testApp: TestApp;
   beforeAll(async () => {
     testApp = new TestApp();

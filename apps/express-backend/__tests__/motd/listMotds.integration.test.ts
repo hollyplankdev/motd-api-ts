@@ -3,7 +3,7 @@ import { MessageOfTheDay } from "@motd-ts/models";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import TestApp from "../utils/testApp";
 
-describe("GET `/history`", () => {
+describe("List MOTDs via GET `/history`", () => {
   let testApp: TestApp;
   beforeEach(async () => {
     testApp = new TestApp();

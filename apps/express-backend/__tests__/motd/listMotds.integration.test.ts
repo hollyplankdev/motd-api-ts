@@ -31,7 +31,10 @@ describe("GET `/history`", () => {
     const allMotds = await Promise.all(
       faker.helpers.multiple(faker.hacker.phrase, { count: 128 }).map(async (phrase) => {
         // For each phrase, create a new MOTD using the phrase as a message.
-        const createResponse = await testApp.api.createMotd({ token }).send({ phrase }).expect(200);
+        const createResponse = await testApp.api
+          .createMotd({ token })
+          .send({ message: phrase })
+          .expect(200);
         return createResponse.body as MessageOfTheDay;
       }),
     );
@@ -50,7 +53,10 @@ describe("GET `/history`", () => {
     const allMotds = await Promise.all(
       faker.helpers.multiple(faker.hacker.phrase, { count: 128 }).map(async (phrase) => {
         // For each phrase, create a new MOTD using the phrase as a message.
-        const createResponse = await testApp.api.createMotd({ token }).send({ phrase }).expect(200);
+        const createResponse = await testApp.api
+          .createMotd({ token })
+          .send({ message: phrase })
+          .expect(200);
         return createResponse.body as MessageOfTheDay;
       }),
     );

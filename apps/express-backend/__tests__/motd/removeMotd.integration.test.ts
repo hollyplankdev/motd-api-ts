@@ -19,11 +19,11 @@ describe("DELETE `/:motdId`", () => {
   //
 
   it("401 when unsigned auth token", async () => {
-    const createMotdMessage = faker.hacker.phrase();
+    const message = faker.hacker.phrase();
     const createMotdToken = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
     const createMotdResponse = await testApp.api
       .createMotd({ token: createMotdToken })
-      .send({ createMotdMessage })
+      .send({ message })
       .expect(200);
     const motd = createMotdResponse.body as MessageOfTheDay;
 
@@ -32,11 +32,11 @@ describe("DELETE `/:motdId`", () => {
   });
 
   it("401 when badly signed auth token", async () => {
-    const createMotdMessage = faker.hacker.phrase();
+    const message = faker.hacker.phrase();
     const createMotdToken = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
     const createMotdResponse = await testApp.api
       .createMotd({ token: createMotdToken })
-      .send({ createMotdMessage })
+      .send({ message })
       .expect(200);
     const motd = createMotdResponse.body as MessageOfTheDay;
 
@@ -45,11 +45,11 @@ describe("DELETE `/:motdId`", () => {
   });
 
   it("401 when missing permission", async () => {
-    const createMotdMessage = faker.hacker.phrase();
+    const message = faker.hacker.phrase();
     const createMotdToken = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
     const createMotdResponse = await testApp.api
       .createMotd({ token: createMotdToken })
-      .send({ createMotdMessage })
+      .send({ message })
       .expect(200);
     const motd = createMotdResponse.body as MessageOfTheDay;
 
@@ -76,11 +76,11 @@ describe("DELETE `/:motdId`", () => {
   });
 
   it("200 when MOTD exists", async () => {
-    const createMotdMessage = faker.hacker.phrase();
+    const message = faker.hacker.phrase();
     const createMotdToken = testApp.jwt({ is: "valid", permissions: ["motd:create"] });
     const createMotdResponse = await testApp.api
       .createMotd({ token: createMotdToken })
-      .send({ createMotdMessage })
+      .send({ message })
       .expect(200);
     const motd = createMotdResponse.body as MessageOfTheDay;
 

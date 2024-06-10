@@ -8,8 +8,9 @@
     "dev:up": "docker compose -f compose-local.yaml up -d --build --remove-orphans",
     "dev:down": "docker compose -f compose-local.yaml down",
     "start": "tsx src/index.ts",
-    "test": "vitest run --coverage",
-    "test:watch": "vitest watch"
+    "test": "vitest run --config ./vitest.unit.config.ts",
+    "test:integration": "vitest run --config ./vitest.integration.config.ts",
+    "test:watch": "vitest watch  --config ./vitest.unit.config.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",

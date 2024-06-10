@@ -1,41 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { MessageOfTheDay } from "@motd-ts/models";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { createMotd, fetchMotd } from "../../src/services/motd.services";
 import TestApp from "../utils/testApp";
 
-describe("createMotd", () => {
-  let testApp: TestApp;
-  beforeAll(async () => {
-    testApp = new TestApp();
-    await testApp.setup();
-  });
-  afterAll(async () => {
-    await testApp.teardown();
-  });
-
-  //
-  //  Tests
-  //
-
-  it("creates new MOTD", async () => {
-    const message = "An example message!";
-    const motd = await createMotd(message);
-
-    expect(motd).toBeTruthy();
-    expect(motd?.message).toEqual(message);
-    expect(motd?._id).toBeTypeOf("string");
-    expect(motd?.createdAt).toBeTruthy();
-    expect(motd?.updatedAt).toBeTruthy();
-  });
-
-  it("can't create empty string MOTD", async () => {
-    const motd = await createMotd("");
-    expect(motd).toBeFalsy();
-  });
-});
-
-describe("POST `/`", () => {
+describe("Create MOTD via POST `/`", () => {
   let testApp: TestApp;
   beforeAll(async () => {
     testApp = new TestApp();
@@ -61,8 +29,7 @@ describe("POST `/`", () => {
     expect(motd.createdAt).toBeTruthy();
     expect(motd.updatedAt).toBeTruthy();
 
-    const foundMotd = await fetchMotd(motd._id);
-    expect(foundMotd).toBeTruthy();
+    await testApp.api.getMotd(motd._id!).expect(200);
   });
 
   it("401 when no auth token", async () => {

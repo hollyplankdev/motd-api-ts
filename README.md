@@ -1,3 +1,6 @@
+# Announcement
+06/17/2024 - I am currently migrating this to a monorepo over at https://github.com/hollyplankdev/motd-api. Once this migration is complete, I am going to archive this repo and continue development on the other repo!
+
 # Message of the Day API: TypeScript
 
 ![The app frontend functioning, showing an example MOTD in the middle of the screen](docs/example.png)

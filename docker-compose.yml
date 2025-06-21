@@ -7,8 +7,9 @@ services:
     depends_on:
       - motd-frontend
       - motd-backend
-    ports:
-      - 80:80
+    # Removed so that this works with coolify
+    #ports:
+    #  - 80:80
     # Tell NGINX where the config we wanna use is. This determines how reverse proxying works.
     volumes:
       - ./nginx.reverse-proxy.conf:/etc/nginx/nginx.conf

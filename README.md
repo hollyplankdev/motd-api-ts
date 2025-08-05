@@ -6,7 +6,7 @@ An example fullstack app that displays a Message of the Day written with TypeScr
 
 # Try It!
 
-You can find a live deployment of this app at [motd.example.fromthe.nexus](https://motd.example.fromthe.nexus/)
+You can find a live deployment of this app at [motd-ts-example.hollyplank.com](https://motd-ts-example.hollyplank.com/)
 
 # Features
 
